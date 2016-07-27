@@ -1,0 +1,25 @@
+{
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				".*",
+				"*.sublime-*"
+			],
+			"folder_exclude_patterns":
+			[
+				"build-tmp",
+				"javadoc",
+				"code",
+				"data"
+			],
+			"path": "."
+		}
+	],
+	"settings":
+	{
+		"tab_size": 2,
+		"translate_tabs_to_spaces": true
+	},
+}
