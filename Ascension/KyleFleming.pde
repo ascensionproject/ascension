@@ -64,6 +64,9 @@ class BoilerplatePattern extends Pattern {
   void run(double deltaMs) {
     // Write your pattern logic here.
     //
+    // We're using LX by Heron Arts
+    // You can find the javadocs here: http://heronarts.com/lx/api/index.html
+    //
     // Define modulators above to simplify things as much as you can,
     // since they will run on their own and are based on time elapsed.
     //
