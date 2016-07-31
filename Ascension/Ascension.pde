@@ -31,11 +31,7 @@ Model loadModel() {
     println("Error: could not load LED position data");
     exit();
   }
-  List<LXPoint> points = new ArrayList<LXPoint>();
-  for (TableRow row : table.rows()) {
-    points.add(new LXPoint(row.getFloat("x"), row.getFloat("z"), -row.getFloat("y")));
-  }
-  return new Model(points);
+  return new Model(table);
 }
 
 void configureUI(P3LX lx) {
