@@ -2,6 +2,7 @@ import java.util.*;
 
 LXPattern[] patterns(P3LX lx) {
   return new LXPattern[] {
+    new ModelTestPattern(lx),
     new BoilerplatePattern(lx),
   };
 }

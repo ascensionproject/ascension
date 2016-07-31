@@ -82,6 +82,36 @@ class BoilerplatePattern extends Pattern {
     for (LXPoint point : model.points) {
       setColor(point.index, c);
     }
+
+  }
+
+}
+
+
+class ModelTestPattern extends Pattern {
+
+  SinLFO globalFade = new SinLFO(0, 360, 10000);
+  SawLFO rootFade = new SawLFO(360, 0, 10000);
+
+  ModelTestPattern(P3LX lx) {
+    super(lx);
+    addModulator(globalFade).start();
+    addModulator(rootFade).start();
+  }
+
+  void run(double deltaMs) {
+    // Fade entire model with sin wave
+    int c = lx.hsb(globalFade.getValuef(), 100, 80);
+    for (LXPoint point : model.points) {
+      setColor(point.index, c);
+    }
+
+    // Fade around base with saw wave
+    for (RootLED led : model.roots.leds) {
+      c = lx.hsb(led.normalizedBasePath * 360 + rootFade.getValuef(), 100, 80);
+      setColor(led.index, c);
+    }
+
   }
 
 }
