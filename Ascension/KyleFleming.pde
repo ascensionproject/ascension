@@ -112,3 +112,31 @@ class ModelTestPattern extends Pattern {
   }
 
 }
+
+class HeartRadiusTestPattern extends Pattern {
+
+  SinLFO globalFade = new SinLFO(0, 360, 10000);
+  SawLFO heartFade = new SawLFO(360, 0, 10000);
+
+  HeartRadiusTestPattern(P3LX lx) {
+    super(lx);
+    addModulator(globalFade).start();
+    addModulator(heartFade).start();
+  }
+
+  void run(double deltaMs) {
+    // Fade entire model with sin wave
+    int c = lx.hsb(globalFade.getValuef(), 100, 80);
+    for (LXPoint point : model.points) {
+      setColor(point.index, c);
+    }
+
+    // Fade around base with saw wave
+    for (HeartLED led : model.heart.leds) {
+      c = lx.hsb((led.radius2D + heartFade.getValuef()) % 360, 100, 80);
+      setColor(led.index, c);
+    }
+
+  }
+
+}

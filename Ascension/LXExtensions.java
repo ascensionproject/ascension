@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.Math;
 
 import processing.data.Table;
 import processing.data.TableRow;
@@ -183,12 +184,25 @@ class LED extends LXPoint {
 }
 
 class HeartLED extends LED {
-
+  final static float centerX = 0;
+  final static float centerY = 5340;
+  final static float centerZ = 0;
+  
   final boolean isFront;
+  final float radius2D, radius3D;
 
   HeartLED(TableRow row) {
     super(row);
     this.isFront = row.getString("front_back").equals("front");
+    this.radius2D = (float)Math.sqrt(
+      Math.pow(this.centerX - row.getFloat("x"), 2)
+      + Math.pow(this.centerY - row.getFloat("z"), 2)
+    );
+    this.radius3D = (float)Math.sqrt(
+      Math.pow(this.centerX - row.getFloat("x"), 2)
+      + Math.pow(this.centerY - row.getFloat("z"), 2)
+      + Math.pow(this.centerZ + row.getFloat("y"), 2)
+    );
   }
 
 }
