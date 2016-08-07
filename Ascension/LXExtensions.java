@@ -178,7 +178,7 @@ class LED extends LXPoint {
     this.segmentId = row.getString("segment_id");
     this.isLeft = row.getString("right_left").equals("left");
     this.stripIndex = row.getInt("strip_number")-1;
-    this.ledIndex = row.getInt("led_number")-1;
+    this.ledIndex = row.getInt("led_number");
   }
 
 }
@@ -190,19 +190,66 @@ class HeartLED extends LED {
   
   final boolean isFront;
   final float radius2D, radius3D;
+  final int heartShell;
+  
+  int[] firstShellBack = {
+    0,    0,    0,    0,    0,
+    8,    0,    8,    0,    8,
+
+    0,    1,    3,    3,    3, //14 == ???
+   10,    5,    7,    0,   10,
+    
+    3,    3,    7,    7,    0, //20 = ???
+    3,    7,    3,    7,    0,
+      
+    4,    7,    3,    2,    3,
+    5,    3,    5,    0,    3,
+    
+    7,    8,    0,    7,    7,
+    8,    0,    3,    6,    0,
+    
+    0,    0,    0,    0,    0,
+    0,
+  };
+  
+  int[] firstShellFront = {
+    9,    9,    9,    9,    9,
+    9,    9,    9,    9,    9,
+    
+    9,    9,    9,    9,    9,
+    9,    9,    9,    9,    9,
+
+    9,    9,    9,    9,    9,
+    9,    9,    9,    9,    9,
+    
+    9,    9,    9,    9,    9,
+    9,    9,    9,    9,    9,
+    
+    9,    9,   10,   13,   14,
+   15,   16,   17,   18,   18,
+    
+   18,   18,   18,   18,    18,
+   18,
+  };
 
   HeartLED(TableRow row) {
     super(row);
     this.isFront = row.getString("front_back").equals("front");
     this.radius2D = (float)Math.sqrt(
-      Math.pow(this.centerX - row.getFloat("x"), 2)
-      + Math.pow(this.centerY - row.getFloat("z"), 2)
+      Math.pow(this.centerX - this.x, 2)
+      + Math.pow(this.centerY - this.y, 2)
     );
     this.radius3D = (float)Math.sqrt(
-      Math.pow(this.centerX - row.getFloat("x"), 2)
-      + Math.pow(this.centerY - row.getFloat("z"), 2)
-      + Math.pow(this.centerZ + row.getFloat("y"), 2)
+      Math.pow(this.centerX - this.x, 2)
+      + Math.pow(this.centerY - this.y, 2)
+      + Math.pow(this.centerZ - this.z, 2)
     );
+    
+    if (this.isFront) {
+      this.heartShell = this.ledIndex + firstShellFront[this.stripIndex];
+    } else {
+      this.heartShell = this.ledIndex + firstShellBack[this.stripIndex];
+    }
   }
 
 }

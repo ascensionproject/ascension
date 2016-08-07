@@ -140,3 +140,55 @@ class HeartRadiusTestPattern extends Pattern {
   }
 
 }
+
+class HeartShellTestPattern extends Pattern {
+ 
+
+  Click increment = new Click(700);
+  DiscreteParameter curShell = new DiscreteParameter("shell", -1, 56);
+  DiscreteParameter curStrip = new DiscreteParameter("strip", -1, 56);
+
+  //int curStrip = 0;
+  
+  HeartShellTestPattern(P3LX lx) {
+    super(lx);
+    //addModulator(increment).start();
+    addParameter(curShell);
+    addParameter(curStrip);
+  }
+
+  void run(double deltaMs) {
+    int c = lx.hsb(0, 0, 0);
+    for (LXPoint point : model.points) {
+      setColor(point.index, c);
+    }
+    
+    //if (increment.getValue() == 1) {
+    //  curStrip++;
+    //  curStrip %= 56;
+    //  println("curStrip: " + curStrip);
+    //}
+
+    c= lx.hsb(180, 100, 80);
+    for (HeartLED led : model.heart.leds) {
+      //if (led.ledIndex == 0 && !led.isFront && led.stripIndex == curIndex.getValuei()) {
+      //  //c= lx.hsb(led.stripIndex * 5, 100, 80);
+      //  setColor(led.index, c);
+      //}
+      if (led.isFront
+          && (-1 == curShell.getValuei() || led.heartShell == curShell.getValuei())
+          && (-1 == curStrip.getValuei() || led.stripIndex == curStrip.getValuei())
+          ) {
+        c= lx.hsb(led.heartShell * 10, 100, 80);
+        setColor(led.index, c);
+      }
+      
+      //if(led.isFront && led.ledIndex == 0) {
+      //  c= lx.hsb(0, 100, 100);
+      //  setColor(led.index, c);
+      //}
+    }
+
+  }
+
+}

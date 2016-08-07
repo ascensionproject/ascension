@@ -2,6 +2,7 @@ import java.util.*;
 
 LXPattern[] patterns(P3LX lx) {
   return new LXPattern[] {
+    new HeartShellTestPattern(lx),
     new HeartRadiusTestPattern(lx),
     new ModelTestPattern(lx),
     new BoilerplatePattern(lx),
