@@ -175,7 +175,7 @@ class HeartShellTestPattern extends Pattern {
       //  //c= lx.hsb(led.stripIndex * 5, 100, 80);
       //  setColor(led.index, c);
       //}
-      if (led.isFront
+      if (!led.isFront
           && (-1 == curShell.getValuei() || led.heartShell == curShell.getValuei())
           && (-1 == curStrip.getValuei() || led.stripIndex == curStrip.getValuei())
           ) {
