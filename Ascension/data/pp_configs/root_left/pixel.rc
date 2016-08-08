@@ -1,0 +1,15 @@
+ether=192.168.1.150
+netmask=255.255.255.0
+gateway=192.168.1.1
+
+pixels=38
+stripsattached=2
+controller=0
+
+strip1=apa102
+strip2=apa102
+
+start1=000001
+start2=000001
+
+swap=12
