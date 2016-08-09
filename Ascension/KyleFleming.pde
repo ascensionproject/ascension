@@ -76,8 +76,8 @@ class BoilerplatePattern extends Pattern {
 
     int c = lx.hsb(modulatorName.getValuef(), 100, 80);
     // Iterate over all LEDs
-    for (LXPoint point : model.points) {
-      setColor(point.index, c);
+    for (LED led : model.leds) {
+      setLEDColor(led, c);
     }
 
   }
@@ -99,14 +99,60 @@ class ModelTestPattern extends Pattern {
   void run(double deltaMs) {
     // Fade entire model with sin wave
     int c = lx.hsb(globalFade.getValuef(), 100, 80);
-    for (LXPoint point : model.points) {
-      setColor(point.index, c);
-    }
+    //for (LXPoint point : model.points) {
+    //  setLEDColor(point.index, c);
+    //}
 
     // Fade around base with saw wave
     for (RootLED led : model.roots.leds) {
       c = lx.hsb(led.normalizedBasePath * 360 + rootFade.getValuef(), 100, 80);
-      setColor(led.index, c);
+      setLEDColor(led, c);
+    }
+
+  }
+
+}
+
+class RootPulsePattern extends Pattern {
+
+  Accelerator location = new Accelerator(0, 0.15, 0);
+  DiscreteParameter locOverride = new DiscreteParameter("override", -1, 100);
+
+  RootPulsePattern(P3LX lx) {
+    super(lx);
+    addModulator(location).start();
+    addParameter(locOverride);
+  }
+
+  void run(double deltaMs) {
+    // Fade entire model with sin wave
+    int off = lx.hsb(0, 0, 0);
+    //for (LED led : model.leds) {
+    //  setLEDColor(led, c);
+    //}
+
+    // Fade around base with saw wave
+    int c;
+    for (LED led : model.leds) {
+      if (!(led instanceof RootLED)) {
+        setLEDColor(led, off);
+      } else {
+        RootLED rootLed = (RootLED) led;
+        c = lx.hsb(rootLed.normalizedBasePath * 360, 100, 80);
+        if (locOverride.getValuei() == -1) {
+          if (abs(rootLed.normalizedBasePath - location.getValuef()) % 1.0 < 0.02) {
+            setLEDColor(led, c);
+          } else {
+            setLEDColor(led, off);
+          }
+        } else {
+          if (abs(rootLed.normalizedBasePath - (locOverride.getValuei() / 100.0)) % 1.0 < 0.02) {
+            setLEDColor(led, c);
+          } else {
+            setLEDColor(led, off);
+          }
+        }
+      }
     }
 
   }
@@ -127,14 +173,14 @@ class HeartRadiusTestPattern extends Pattern {
   void run(double deltaMs) {
     // Fade entire model with sin wave
     int c = lx.hsb(globalFade.getValuef(), 100, 80);
-    for (LXPoint point : model.points) {
-      setColor(point.index, c);
+    for (LED led : model.leds) {
+      setLEDColor(led, c);
     }
 
     // Fade around base with saw wave
     for (HeartLED led : model.heart.leds) {
       c = lx.hsb((led.radius2D + heartFade.getValuef()) % 360, 100, 80);
-      setColor(led.index, c);
+      setLEDColor(led, c);
     }
 
   }
@@ -159,8 +205,8 @@ class HeartShellTestPattern extends Pattern {
 
   void run(double deltaMs) {
     int c = lx.hsb(0, 0, 0);
-    for (LXPoint point : model.points) {
-      setColor(point.index, c);
+    for (LED led : model.leds) {
+      setLEDColor(led, c);
     }
     
     //if (increment.getValue() == 1) {
@@ -173,19 +219,19 @@ class HeartShellTestPattern extends Pattern {
     for (HeartLED led : model.heart.leds) {
       //if (led.ledIndex == 0 && !led.isFront && led.stripIndex == curIndex.getValuei()) {
       //  //c= lx.hsb(led.stripIndex * 5, 100, 80);
-      //  setColor(led.index, c);
+      //  setLEDColor(led.index, c);
       //}
       if (!led.isFront
           && (-1 == curShell.getValuei() || led.heartShell == curShell.getValuei())
           && (-1 == curStrip.getValuei() || led.stripIndex == curStrip.getValuei())
           ) {
         c= lx.hsb(led.heartShell * 10, 100, 80);
-        setColor(led.index, c);
+        setLEDColor(led, c);
       }
       
       //if(led.isFront && led.ledIndex == 0) {
       //  c= lx.hsb(0, 100, 100);
-      //  setColor(led.index, c);
+      //  setLEDColor(led.index, c);
       //}
     }
 

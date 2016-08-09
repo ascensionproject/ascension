@@ -11,6 +11,10 @@ import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.pattern.LXPattern;
 
+import com.heroicrobot.dropbit.registry.*;
+import com.heroicrobot.dropbit.devices.pixelpusher.Strip;
+
+
 class Model extends LXModel {
 
   final List<LED> leds;
@@ -20,8 +24,8 @@ class Model extends LXModel {
   final Trunks trunks;
   final Roots roots;
 
-  Model(Table ledData) {
-    super(new Fixture(ledData));
+  Model(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
+    super(new Fixture(ledData, ppStripData, ppRegistry));
     Fixture fixture = (Fixture)fixtures.get(0);
     leds = (List)fixture.getPoints();
     heart = fixture.heart;
@@ -35,11 +39,11 @@ class Model extends LXModel {
     final Leaves leaves;
     final Trunks trunks;
     final Roots roots;
-    Fixture(Table ledData) {
-      addPoints(heart = new Heart(ledData));
-      addPoints(leaves = new Leaves(ledData));
-      addPoints(trunks = new Trunks(ledData));
-      addPoints(roots = new Roots(ledData));
+    Fixture(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
+      addPoints(heart = new Heart(ledData, ppStripData, ppRegistry));
+      addPoints(leaves = new Leaves(ledData, ppStripData, ppRegistry));
+      addPoints(trunks = new Trunks(ledData, ppStripData, ppRegistry));
+      addPoints(roots = new Roots(ledData, ppStripData, ppRegistry));
     }
   }
 
@@ -49,17 +53,17 @@ class Heart extends LXModel {
 
   final List<HeartLED> leds;
 
-  Heart(Table ledData) {
-    super(new Fixture(ledData));
+  Heart(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
+    super(new Fixture(ledData, ppStripData, ppRegistry));
     Fixture fixture = (Fixture)fixtures.get(0);
     leds = (List)fixture.getPoints();
   }
 
   static class Fixture extends LXAbstractFixture {
-    Fixture(Table ledData) {
+    Fixture(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
       for (TableRow row : ledData.rows()) {
         if (!row.getString("section").equals("heart")) continue;
-        addPoint(new HeartLED(row));
+        addPoint(new HeartLED(row, ppStripData, ppRegistry));
       }
     }
   }
@@ -70,18 +74,18 @@ class Leaves extends LXModel {
 
   final List<LeafLED> leds;
 
-  Leaves(Table ledData) {
-    super(new Fixture(ledData));
+  Leaves(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
+    super(new Fixture(ledData, ppStripData, ppRegistry));
     Fixture fixture = (Fixture)fixtures.get(0);
     leds = (List)fixture.getPoints();
   }
 
   static class Fixture extends LXAbstractFixture {
-    Fixture(Table ledData) {
+    Fixture(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
       for (TableRow row : ledData.rows()) {
         if (!(row.getString("section").equals("trunk")
             && row.getString("subsection").equals("leaf"))) continue;
-        addPoint(new LeafLED(row));
+        addPoint(new LeafLED(row, ppStripData, ppRegistry));
       }
     }
   }
@@ -92,18 +96,18 @@ class Trunks extends LXModel {
 
   final List<TrunkLED> leds;
 
-  Trunks(Table ledData) {
-    super(new Fixture(ledData));
+  Trunks(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
+    super(new Fixture(ledData, ppStripData, ppRegistry));
     Fixture fixture = (Fixture)fixtures.get(0);
     leds = (List)fixture.getPoints();
   }
 
   static class Fixture extends LXAbstractFixture {
-    Fixture(Table ledData) {
+    Fixture(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
       for (TableRow row : ledData.rows()) {
         if (!(row.getString("section").equals("trunk")
             && !row.getString("subsection").equals("leaf"))) continue;
-        addPoint(new TrunkLED(row));
+        addPoint(new TrunkLED(row, ppStripData, ppRegistry));
       }
     }
   }
@@ -124,8 +128,8 @@ class Roots extends LXModel {
     "right-outside-front-zouter", "right-outside-front-zinner"
   };
 
-  Roots(Table ledData) {
-    super(new Fixture(ledData));
+  Roots(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
+    super(new Fixture(ledData, ppStripData, ppRegistry));
     Fixture fixture = (Fixture)fixtures.get(0);
     leds = (List)fixture.getPoints();
     basePathCount = fixture.basePathCount;
@@ -133,10 +137,10 @@ class Roots extends LXModel {
 
   static class Fixture extends LXAbstractFixture {
     final int basePathCount;
-    Fixture(Table ledData) {
+    Fixture(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
       for (TableRow row : ledData.rows()) {
         if (!row.getString("section").equals("root")) continue;
-        addPoint(new RootLED(row));
+        addPoint(new RootLED(row, ppStripData, ppRegistry));
       }
       List<RootLED> leds = (List)getPoints();
       int basePathIndex = 0;
@@ -172,13 +176,40 @@ class LED extends LXPoint {
   final boolean isLeft;
   final int stripIndex;
   final int ledIndex;
+  final int ppLedIndex;
+  final int ppStripIndex;
 
-  LED(TableRow row) {
+  final DeviceRegistry ppRegistry;
+
+  LED(TableRow row, Table ppStripData, DeviceRegistry registry) {
     super(row.getFloat("x"), row.getFloat("z"), -row.getFloat("y"));
+    this.ppRegistry = registry;
     this.segmentId = row.getString("segment_id");
     this.isLeft = row.getString("right_left").equals("left");
     this.stripIndex = row.getInt("strip_number")-1;
     this.ledIndex = row.getInt("led_number");
+
+    TableRow stripData = ppStripData.findRow(this.segmentId, "stripId");
+    if (stripData != null) {
+      this.ppStripIndex = stripData.getInt("ppStrip");
+      if (stripData.getInt("reverse") == 1) {
+        this.ppLedIndex = (stripData.getInt("stripLength") - this.ledIndex)
+                          + stripData.getInt("indexOffset");
+      } else {
+        this.ppLedIndex = this.ledIndex + stripData.getInt("indexOffset");
+      }
+    } else {
+      // not in the csv yet
+      this.ppLedIndex = -1;
+      this.ppStripIndex = -1;
+    }
+  }
+
+  public void pushColor(int color) {
+    if (this.ppStripIndex == -1 || this.ppStripIndex > 2) return;
+    Strip ppStrip = this.ppRegistry.getStrips().get(this.ppStripIndex - 1);
+    ppStrip.setPixel(color, this.ppLedIndex);
+    //System.out.println("pushing color");
   }
 
 }
@@ -187,53 +218,53 @@ class HeartLED extends LED {
   final static float centerX = 0;
   final static float centerY = 5340;
   final static float centerZ = 0;
-  
+
   final boolean isFront;
   final float radius2D, radius3D;
   final int heartShell;
-  
-  int[] firstShellBack = {
+
+  final static int[] firstShellBack = {
     0,    0,    0,    0,    0,
     8,    0,    8,    0,    8,
 
     0,    1,    3,    3,    3,
    10,    5,    8,    0,   12,
-    
+
     3,    3,    9,    9,    0,
     3,    9,    3,    9,    0,
-      
+
     4,    7,    3,    2,    3,
     5,    3,    5,    0,    3,
-    
+
     7,    8,    0,    2,    7,
     8,    0,    2,    6,    0,
-    
+
     0,    0,    0,    0,    0,
     0,
   };
-  
-  int[] firstShellFront = {
-    9,    9,    9,    9,    9,
-    9,    9,    9,    9,    9,
-    
+
+  final static int[] firstShellFront = {
     9,    9,    9,    9,    9,
     9,    9,    9,    9,    9,
 
     9,    9,    9,    9,    9,
     9,    9,    9,    9,    9,
-    
+
     9,    9,    9,    9,    9,
     9,    9,    9,    9,    9,
-    
+
+    9,    9,    9,    9,    9,
+    9,    9,    9,    9,    9,
+
     9,    9,   10,   13,   14,
    15,   16,   17,   18,   18,
-    
+
    18,   18,   18,   18,    18,
    18,
   };
 
-  HeartLED(TableRow row) {
-    super(row);
+  HeartLED(TableRow row, Table ppStripData, DeviceRegistry ppRegistry) {
+    super(row, ppStripData, ppRegistry);
     this.isFront = row.getString("front_back").equals("front");
     this.radius2D = (float)Math.sqrt(
       Math.pow(this.centerX - this.x, 2)
@@ -244,7 +275,7 @@ class HeartLED extends LED {
       + Math.pow(this.centerY - this.y, 2)
       + Math.pow(this.centerZ - this.z, 2)
     );
-    
+
     if (this.isFront) {
       this.heartShell = this.ledIndex + firstShellFront[this.stripIndex];
     } else {
@@ -256,16 +287,16 @@ class HeartLED extends LED {
 
 class LeafLED extends LED {
 
-  LeafLED(TableRow row) {
-    super(row);
+  LeafLED(TableRow row, Table ppStripData, DeviceRegistry ppRegistry) {
+    super(row, ppStripData, ppRegistry);
   }
 
 }
 
 class TrunkLED extends LED {
 
-  TrunkLED(TableRow row) {
-    super(row);
+  TrunkLED(TableRow row, Table ppStripData, DeviceRegistry ppRegistry) {
+    super(row, ppStripData, ppRegistry);
   }
 
 }
@@ -279,8 +310,8 @@ class RootLED extends LED {
 
   String basePathString;
 
-  RootLED(TableRow row) {
-    super(row);
+  RootLED(TableRow row, Table ppStripData, DeviceRegistry ppRegistry) {
+    super(row, ppStripData, ppRegistry);
     this.isInside = row.getString("subsection").equals("inside");
     this.isFront = row.getString("front_back").equals("front");
     this.basePathString = row.getString("right_left") + "-"
@@ -289,7 +320,6 @@ class RootLED extends LED {
       this.basePathString += "-z" + (stripIndex < 3 ? "outer" : "inner");
     }
   }
-
 }
 
 abstract class Pattern extends LXPattern {
@@ -301,4 +331,8 @@ abstract class Pattern extends LXPattern {
     this.model = (Model)super.model;
   }
 
+  public void setLEDColor(LED led, int c) {
+    this.setColor(led.index, c);
+    led.pushColor(c);
+  }
 }
