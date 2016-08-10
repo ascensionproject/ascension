@@ -178,6 +178,7 @@ class LED extends LXPoint {
   final int ledIndex;
   final int ppLedIndex;
   final int ppStripIndex;
+  final int ppGroup;
 
   final DeviceRegistry ppRegistry;
 
@@ -192,6 +193,7 @@ class LED extends LXPoint {
     TableRow stripData = ppStripData.findRow(this.segmentId, "stripId");
     if (stripData != null) {
       this.ppStripIndex = stripData.getInt("ppStrip");
+      this.ppGroup = stripData.getInt("ppGroup");
       if (stripData.getInt("reverse") == 1) {
         this.ppLedIndex = (stripData.getInt("stripLength") - this.ledIndex)
                           + stripData.getInt("indexOffset");
@@ -200,16 +202,20 @@ class LED extends LXPoint {
       }
     } else {
       // not in the csv yet
+      this.ppGroup = -1;
       this.ppLedIndex = -1;
       this.ppStripIndex = -1;
     }
   }
 
   public void pushColor(int color) {
-    if (this.ppStripIndex == -1 || this.ppStripIndex > 2) return;
-    Strip ppStrip = this.ppRegistry.getStrips().get(this.ppStripIndex - 1);
-    ppStrip.setPixel(color, this.ppLedIndex);
-    //System.out.println("pushing color");
+    if (this.ppStripIndex == -1) return;
+    List<Strip> ppStrips = this.ppRegistry.getStrips(this.ppGroup);
+
+    if (ppStrips.size() < this.ppStripIndex) return;
+
+    Strip strip = ppStrips.get(this.ppStripIndex - 1);
+    strip.setPixel(color, this.ppLedIndex);
   }
 
 }
