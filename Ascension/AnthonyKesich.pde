@@ -1,41 +1,45 @@
-class RootPulsePattern extends Pattern {
+class PulsePattern extends Pattern {
 
   Accelerator location = new Accelerator(0, 0.4, 0);
   DiscreteParameter locOverride = new DiscreteParameter("override", -1, 100);
 
-  RootPulsePattern(P3LX lx) {
+  PulsePattern(P3LX lx) {
     super(lx);
     addModulator(location).start();
     addParameter(locOverride);
   }
 
   void run(double deltaMs) {
-    // Fade entire model with sin wave
     int off = lx.hsb(0, 0, 0);
-    //for (LED led : model.leds) {
-    //  setLEDColor(led, c);
-    //}
 
-    // Fade around base with saw wave
+    // shoot around base at constant speed
     int c;
     for (LED led : model.leds) {
-      if (!(led instanceof RootLED)) {
-        setLEDColor(led, off);
-      } else {
+      float param = 0;
+      if (led instanceof TrunkLED) {
+        TrunkLED trunkLed = (TrunkLED) led;
+        param = trunkLed.normalizedTrunkDistance * 2;
+      } else if (led instanceof RootLED) {
         RootLED rootLed = (RootLED) led;
-        c = lx.hsb(rootLed.normalizedBasePath * 360, 100, 80);
-        if (locOverride.getValuei() == -1) {
-          if (abs(rootLed.normalizedBasePath - location.getValuef()) % 1.0 < 0.02) {
-            setLEDColor(led, c);
-          } else {
-            setLEDColor(led, off);
-          }
+        param = rootLed.normalizedBasePath;
+      } else {
+        setLEDColor(led, off);
+        continue;
+      }
+      
+      c = lx.hsb(param*360, 100, 100);
+      
+      if (locOverride.getValuei() == -1) {
+        if (abs(param - location.getValuef()) % 1.0 < 0.02) {
+          setLEDColor(led, c);
         } else {
-          if (abs(rootLed.normalizedBasePath - (locOverride.getValuei() / 100.0)) % 1.0 < 0.02) {
-            setLEDColor(led, c);
-          } else {
-            setLEDColor(led, off);
-          }
+          setLEDColor(led, off);
+        }
+      } else {
+        if (abs(param - (locOverride.getValuei() / 100.0)) % 1.0 < 0.02) {
+          setLEDColor(led, c);
+        } else {
+          setLEDColor(led, off);
         }
       }
     }
@@ -100,6 +104,28 @@ class HeartShellTestPattern extends Pattern {
         c= lx.hsb(led.heartShell * 10, 100, 80);
         setLEDColor(led, c);
       }
+    }
+  }
+}
+
+class TrunkLengthRainbowPattern extends Pattern {
+
+  //SinLFO globalFade = new SinLFO(0, 360, 10000);
+  //SawLFO rootFade = new SawLFO(360, 0, 10000);
+
+  TrunkLengthRainbowPattern(P3LX lx) {
+    super(lx);
+    //addModulator(globalFade).start();
+    //addModulator(rootFade).start();
+  }
+
+  void run(double deltaMs) {
+    int c; // = lx.hsb(globalFade.getValuef(), 100, 80);
+
+    // Fade around base with saw wave
+    for (TrunkLED led : model.trunks.leds) {
+      c = lx.hsb(led.normalizedTrunkDistance * 360, 100, 80);
+      setLEDColor(led, c);
     }
   }
 }

@@ -5,7 +5,8 @@ import com.heroicrobot.dropbit.devices.pixelpusher.Strip;
 
 LXPattern[] patterns(P3LX lx) {
   return new LXPattern[] {
-    new RootPulsePattern(lx),
+    new TrunkLengthRainbowPattern(lx),
+    new PulsePattern(lx),
     new HeartShellTestPattern(lx),
     new HeartRadiusTestPattern(lx),
     new ModelTestPattern(lx),

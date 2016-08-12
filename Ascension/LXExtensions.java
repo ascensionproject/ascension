@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.Math;
+import java.lang.System;
+
 
 import processing.data.Table;
 import processing.data.TableRow;
@@ -104,10 +106,34 @@ class Trunks extends LXModel {
 
   static class Fixture extends LXAbstractFixture {
     Fixture(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
-      for (TableRow row : ledData.rows()) {
-        if (!(row.getString("section").equals("trunk")
-            && !row.getString("subsection").equals("leaf"))) continue;
-        addPoint(new TrunkLED(row, ppStripData, ppRegistry));
+  float lastMaxDist, maxDist;
+  float totalLength = -1;
+
+      for(int passNum = 0; passNum < 2; passNum++) {
+        lastMaxDist = 0;
+        maxDist = 0;
+
+        for (TableRow row : ledData.rows()) {
+          if (!(row.getString("section").equals("trunk")
+              && !row.getString("subsection").equals("leaf"))) continue;
+
+          if (passNum == 0 && row.getString("right_left").equals("left")) continue;
+          
+          if(row.getInt("arc_strip_num") == 0
+             && row.getInt("led_number") == 0) {
+            lastMaxDist = maxDist;
+          }
+          float thisDist = row.getFloat("arc_length") + lastMaxDist;
+
+          if (passNum == 1) {
+            addPoint(new TrunkLED(row, ppStripData, ppRegistry, thisDist, thisDist/totalLength));
+          }
+
+          maxDist = Math.max(maxDist,thisDist);
+        }
+
+        totalLength = maxDist;
+
       }
     }
   }
@@ -300,9 +326,18 @@ class LeafLED extends LED {
 }
 
 class TrunkLED extends LED {
+  final float trunkDistance;
+  final float normalizedTrunkDistance;
 
-  TrunkLED(TableRow row, Table ppStripData, DeviceRegistry ppRegistry) {
+  TrunkLED(
+          TableRow row,
+          Table ppStripData,
+          DeviceRegistry ppRegistry,
+          float dist,
+          float normDist) {
     super(row, ppStripData, ppRegistry);
+    this.trunkDistance = dist;
+    this.normalizedTrunkDistance = normDist;
   }
 
 }
