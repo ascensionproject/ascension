@@ -129,3 +129,47 @@ class TrunkLengthRainbowPattern extends Pattern {
     }
   }
 }
+
+class PlantHeartWavePattern extends Pattern {
+
+  Accelerator time = new Accelerator(0, 1, 0);
+  //SinLFO heartPulse = new SinLFO(10, 0, 20000);
+
+  PlantHeartWavePattern(P3LX lx) {
+    super(lx);
+    addModulator(time).start();
+    //addModulator(rootFade).start();
+  }
+
+  void run(double deltaMs) {
+    int c; // = lx.hsb(globalFade.getValuef(), 100, 80);
+
+    // Fade around base interference model
+    for (RootLED led : model.roots.leds) {
+      float x = led.normalizedBasePath;
+      float t = time.getValuef();
+      float b = sin( 6 * x + 0.3 * t);
+      b += cos( 14 * x - 0.06 * t);
+      b -= 0.5 * cos( x + 0.1 * t);
+      b *= b*100/2.5/2.5;
+      c = lx.hsb(144, 100, b);
+      setLEDColor(led, c);
+    }
+    
+    // Slowly beat heart by shells
+    for (HeartLED led : model.heart.leds) {
+      c = lx.hsb(324, 90, 40 + 10 * sin(led.heartShell/2.0 - time.getValuef()/4.0));
+      setLEDColor(led, c);
+    }
+    
+    c = lx.hsb(144, 100, 44);
+    for (LeafLED led : model.leaves.leds) {
+      setLEDColor(led, c);
+    }
+    
+    for (TrunkLED led : model.trunks.leds) {
+      setLEDColor(led, c);
+    }
+    
+  }
+}
