@@ -121,7 +121,12 @@ class Trunks extends LXModel {
           
           if(row.getInt("arc_strip_num") == 0
              && row.getInt("led_number") == 0) {
-            lastMaxDist = maxDist;
+            if(row.getInt("strip_number") == 1) {
+              lastMaxDist = 0;
+               maxDist = 0;
+            } else {
+              lastMaxDist = maxDist;
+            }
           }
           float thisDist = row.getFloat("arc_length") + lastMaxDist;
 
