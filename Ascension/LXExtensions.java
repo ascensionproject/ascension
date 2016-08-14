@@ -258,6 +258,8 @@ class HeartLED extends LED {
 
   final boolean isFront;
   final float radius2D, radius3D;
+  final float thetaY, thetaZ;
+  final float phiY, phiZ;
   final int heartShell;
 
   final static int[] firstShellBack = {
@@ -303,15 +305,25 @@ class HeartLED extends LED {
   HeartLED(TableRow row, Table ppStripData, DeviceRegistry ppRegistry) {
     super(row, ppStripData, ppRegistry);
     this.isFront = row.getString("front_back").equals("front");
+    
+    float localX = this.x - this.centerX;
+    float localY = this.y - this.centerY;
+    float localZ = this.z - this.centerZ;
+    
     this.radius2D = (float)Math.sqrt(
-      Math.pow(this.centerX - this.x, 2)
-      + Math.pow(this.centerY - this.y, 2)
+      Math.pow(localX, 2)
+      + Math.pow(localY, 2)
     );
+    
     this.radius3D = (float)Math.sqrt(
-      Math.pow(this.centerX - this.x, 2)
-      + Math.pow(this.centerY - this.y, 2)
-      + Math.pow(this.centerZ - this.z, 2)
+      Math.pow(localX, 2)
+      + Math.pow(localY, 2)
+      + Math.pow(localZ, 2)
     );
+    this.thetaY = (float)Math.atan2(localX, -localZ);
+    this.phiY = (float)Math.acos(localY/this.radius3D);
+    this.thetaZ = (float)Math.atan2(-localX, localY);
+    this.phiZ = (float)Math.acos(localZ/this.radius3D);
 
     if (this.isFront) {
       this.heartShell = this.ledIndex + firstShellFront[this.stripIndex];

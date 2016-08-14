@@ -30,6 +30,39 @@ class TrunkPhiTestPattern extends Pattern {
   }
 }
 
+class HeartPhiTestPattern extends Pattern {
+  
+  DiscreteParameter curPhi = new DiscreteParameter("phi", -1, 11);
+  Accelerator time = new Accelerator(0, 1, 0);
+  
+  HeartPhiTestPattern(P3LX lx) {
+    super(lx);
+    addParameter(curPhi);
+    addModulator(time).start();
+  }
+
+  void run(double deltaMs) {
+    int off = lx.hsb(0, 0, 0);
+
+    int c1 = lx.hsb(140, 100, 70);
+    int c2 = lx.hsb(230, 100, 100);
+    // shoot around base at constant speed
+    int c;
+    for (LED led : model.leds) {
+      float param = 0;
+      if (led instanceof HeartLED) {
+        HeartLED heartLed = (HeartLED) led;
+        float mix = 0.5 + 0.5*(float)Math.sin(heartLed.thetaY*6 + 60*time.getValuef());
+        c = LXColor.lerp(c1,c2,mix);
+        setLEDColor(led, c);
+      } else {
+        setLEDColor(led, off);
+        continue;
+      }
+    }
+  }
+}
+
 class PulsePattern extends Pattern {
 
   Accelerator location = new Accelerator(0, 0.4, 0);
