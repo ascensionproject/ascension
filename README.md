@@ -100,7 +100,6 @@ class StaticPartsExamplePattern extends Pattern {
               );
       setLEDColor(led, c);
     }
-    
   }
 }
 ```
@@ -109,6 +108,12 @@ The model is broken up into four subsections: roots, tunnks, leaves, and heart.
 You can access all of the leds in a part by a simple call, e.g. `model.roots.leds`, and then iterate.
 As shown in the trunk section, we have special parameters for leds within sections.
 Above, the call to `led.normalizedTrunkDistance` in the trunk section of the code gives a parameterizes value between 0 and 1 which tells us how far along the trunk this led is, with 0 being next to the roots and 1 being next to the leaves.
+We use this index along with `LXColor.lerp` to interpolate between the color of the roots and the color of the leaves to give a smooth transition from one to the other.
+
+![Ascension fade](https://raw.githubusercontent.com/ascensionproject/ascension/master/imgs/basic_fade.png)
+
+We also used the special property `led.heartShell` in the heart to fade out the brightness on the heart.
+Check out the [list of LED properties](https://github.com/ascensionproject/ascension#led-properties) below.
 
 # LED Properties
 ## All LEDs
