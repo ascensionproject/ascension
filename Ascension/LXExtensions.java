@@ -333,6 +333,7 @@ class LeafLED extends LED {
 class TrunkLED extends LED {
   final float trunkDistance;
   final float normalizedTrunkDistance;
+  final int phiIndex;
 
   TrunkLED(
           TableRow row,
@@ -343,6 +344,7 @@ class TrunkLED extends LED {
     super(row, ppStripData, ppRegistry);
     this.trunkDistance = dist;
     this.normalizedTrunkDistance = normDist;
+    this.phiIndex = row.getInt("arc_strip_num");
   }
 
 }

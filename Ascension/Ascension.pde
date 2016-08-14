@@ -5,6 +5,7 @@ import com.heroicrobot.dropbit.devices.pixelpusher.Strip;
 
 LXPattern[] patterns(P3LX lx) {
   return new LXPattern[] {
+    new TrunkPhiTestPattern(lx),
     new StaticPartsExamplePattern(lx),
     new SolidColorExamplePattern(lx),
     new PlantHeartWavePattern(lx),
@@ -79,6 +80,8 @@ Model loadModel() {
 void configureUI(P3LX lx) {
   UI3dContext context3d = new UI3dContext(lx.ui);
   context3d.addComponent(new UIPointCloud(lx, lx.model))
+    //.setCenter(model.cx, 500, model.cz)
+    //.setRadius(2000);
     .setCenter(model.cx, model.cy, model.cz)
     .setRadius(8000);
   lx.ui.addLayer(context3d);

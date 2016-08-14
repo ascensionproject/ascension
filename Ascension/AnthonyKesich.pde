@@ -1,3 +1,35 @@
+class TrunkPhiTestPattern extends Pattern {
+  
+  DiscreteParameter curPhi = new DiscreteParameter("phi", 10);
+  
+  TrunkPhiTestPattern(P3LX lx) {
+    super(lx);
+    addParameter(curPhi);
+  }
+
+  void run(double deltaMs) {
+    int off = lx.hsb(0, 0, 0);
+
+    // shoot around base at constant speed
+    int c;
+    for (LED led : model.leds) {
+      float param = 0;
+      if (led instanceof TrunkLED) {
+        TrunkLED trunkLed = (TrunkLED) led;
+        if (trunkLed.phiIndex == curPhi.getValuei()) {
+          c = lx.hsb(36*trunkLed.phiIndex, 100, 80);
+          setLEDColor(led, c);
+        } else {
+          setLEDColor(led, off);
+        }
+      } else {
+        setLEDColor(led, off);
+        continue;
+      }
+    }
+  }
+}
+
 class PulsePattern extends Pattern {
 
   Accelerator location = new Accelerator(0, 0.4, 0);
