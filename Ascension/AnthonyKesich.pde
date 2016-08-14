@@ -44,16 +44,26 @@ class HeartPhiTestPattern extends Pattern {
   void run(double deltaMs) {
     int off = lx.hsb(0, 0, 0);
 
-    int c1 = lx.hsb(140, 100, 70);
-    int c2 = lx.hsb(230, 100, 100);
+    int c1 = lx.hsb(230, 100, 100);
+    int c2 = lx.hsb(140, 100, 70);
     // shoot around base at constant speed
     int c;
     for (LED led : model.leds) {
       float param = 0;
       if (led instanceof HeartLED) {
         HeartLED heartLed = (HeartLED) led;
-        float mix = 0.5 + 0.5*(float)Math.sin(heartLed.thetaY*6 + 60*time.getValuef());
-        c = LXColor.lerp(c1,c2,mix);
+        float x1 = heartLed.thetaY;
+        float x2 = heartLed.phiY*2;
+        float t = time.getValuef();
+        float b = sin( 6 * x1 + 0.3 * t);
+        b += 0.5 * cos( 14 * x2 - 0.06 * t);
+        b += 0.5 * cos( 11.3 * x2 + 0.092 * t);
+        b += sin( 6 * x2 - 0.3 * t);
+        b -= 0.5 * cos( x1 + 0.1 * t);
+        b -= cos( 3 * x1 - 0.072 * t);
+        b += 0.3 * cos( 12 * x2 + 0.2 * t);
+        b *= b/4.3/4.3;
+        c = LXColor.lerp(c1,c2,b);
         setLEDColor(led, c);
       } else {
         setLEDColor(led, off);

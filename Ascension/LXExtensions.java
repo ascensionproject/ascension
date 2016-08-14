@@ -108,6 +108,7 @@ class Trunks extends LXModel {
     Fixture(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
   float lastMaxDist, maxDist;
   float totalLength = -1;
+  int lastStripNumber = -1;
 
       for(int passNum = 0; passNum < 2; passNum++) {
         lastMaxDist = 0;
@@ -119,8 +120,8 @@ class Trunks extends LXModel {
 
           if (passNum == 0 && row.getString("right_left").equals("left")) continue;
           
-          if(row.getInt("arc_strip_num") == 0
-             && row.getInt("led_number") == 0) {
+          if(row.getInt("led_number") == 0
+             && lastStripNumber != row.getInt("strip_number")) {
             if(row.getInt("strip_number") == 1) {
               lastMaxDist = 0;
                maxDist = 0;
@@ -128,6 +129,7 @@ class Trunks extends LXModel {
               lastMaxDist = maxDist;
             }
           }
+          lastStripNumber = row.getInt("strip_number");
           float thisDist = row.getFloat("arc_length") + lastMaxDist;
 
           if (passNum == 1) {

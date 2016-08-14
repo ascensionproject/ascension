@@ -5,17 +5,17 @@ import com.heroicrobot.dropbit.devices.pixelpusher.Strip;
 
 LXPattern[] patterns(P3LX lx) {
   return new LXPattern[] {
+    new SolidColorExamplePattern(lx),
+    new StaticPartsExamplePattern(lx),
+    new BasicAnimationPattern(lx),
     new HeartPhiTestPattern(lx),
     new TrunkPhiTestPattern(lx),
-    new StaticPartsExamplePattern(lx),
-    new SolidColorExamplePattern(lx),
     new PlantHeartWavePattern(lx),
     new TrunkLengthRainbowPattern(lx),
     new PulsePattern(lx),
     new HeartShellTestPattern(lx),
     new HeartRadiusTestPattern(lx),
     new ModelTestPattern(lx),
-    new BoilerplatePattern(lx),
   };
 }
 

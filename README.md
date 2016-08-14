@@ -115,6 +115,25 @@ We use this index along with `LXColor.lerp` to interpolate between the color of 
 We also used the special property `led.heartShell` in the heart to fade out the brightness on the heart.
 Check out the [list of LED properties](https://github.com/ascensionproject/ascension#led-properties) below.
 
+## Make it move
+
+Ok, so static looks are nice, but we want to make it do things.
+[`LXModulators`](http://heronarts.com/lx/api/heronarts/lx/modulator/LXModulator.html) are your friend.
+These are objects that vary over time and are easily resetable, making it so that you don't need to worry about time management.
+They come in common forms such as saw, sin, step, linear, [etc.](http://heronarts.com/lx/api/heronarts/lx/modulator/package-tree.html).
+In the `BasicExamples` file, there is a pattern at the bottom called `BasicAnimationPattern`.
+As its name implies, it's quite basic; it just cycles the entire statue through a rainbow pattern.
+However, it is extremely well commented with examples of many of the modulators available to you.
+Go read it now then come back here.
+
+## Adding your own patterns
+1) Create a new file called `YourName`
+2) Create a new class that extends `Pattern`
+3) Add your pattern to the list of patterns at the top of `Ascension.pde`. This will add it to the list of patterns accessible in the upper left of the UI
+4) Write pattern and make blinkies
+5) Bask in the knowledge that you're an artist and your art will be displayed for all to see on the Playa
+6) THANK YOU!
+
 # LED Properties
 ## All LEDs
 - `x, y, z` -- Cartesian location of the LED in mm
