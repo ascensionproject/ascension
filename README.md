@@ -169,3 +169,6 @@ Go read it now then come back here.
 - `isFront` -- True if on the front half
 - `basePathIndex` -- Integer index giving a continuous path around the base
 - `notmalizedBasePath` -- Same as above but a float going from 0.0 to 1.0
+
+#Useful Links
+- [LX Documentation](http://heronarts.com/lx/api/index.html?overview-summary.html)
