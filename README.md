@@ -130,7 +130,7 @@ Go read it now then come back here.
 1. Create a new file called `YourName`
 2. Create a new class that extends `Pattern`
 3. Add your pattern to the list of patterns at the top of `Ascension.pde`
-..1. This will add it to the list of patterns accessible in the upper left of the UI
+  1. This will add it to the list of patterns accessible in the upper left of the UI
 4. Write pattern and make blinkies
 5. Bask in the knowledge that you're an artist and your art will be displayed for all to see on the Playa
 6. THANK YOU!
@@ -145,7 +145,7 @@ Go read it now then come back here.
 ## Heart LEDs
 - `isFront` -- True if front half of heart
 - `heartShell` -- Integer denoting sets of concentric heart shells
-..- 0 is the center and 30 just lights up a handful of lights right at the edge of the heart.
+  - 0 is the center and 30 just lights up a handful of lights right at the edge of the heart.
 - `radius2D` -- Distance in the x-y plane from the center of the heart
 - `radius3D` -- Total x-y-z distance from the center of the heart
 - `thetaZ` -- Angular distance in radians from 12 o'clock on the heart around the Z-axis
@@ -161,8 +161,8 @@ Go read it now then come back here.
 - `trunkDistance` -- Distance along the trunk from the bottom in mm
 - `normalizedTrunkDistance` -- Distance along the trunk normalized to be between 0 and 1 such that 0 is next to the roots and 1 is next to the leaves
 - `phiIndex` -- Integer between 0 and 9 such that all strips with the same index will form a continuous line from the roots to the leaves
-..- Note that phiIndex is duplicated between the left and right sizes
-..- At the base, index 0 points towards the center of the statue.
+  - Note that phiIndex is duplicated between the left and right sizes
+  - At the base, index 0 points towards the center of the statue.
 
 ##RootLEDs
 - `isInside` -- True if one of the 4 shorter legs making the inner square
