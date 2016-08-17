@@ -402,11 +402,11 @@ class PixelPusherOutput extends LXOutput {
 
 }
 
-abstract class Pattern extends LXPattern {
+public abstract class Pattern extends LXPattern {
 
-  protected Model model;
+  protected final Model model;
 
-  Pattern(LX lx) {
+  public Pattern(LX lx) {
     super(lx);
     this.model = (Model)super.model;
   }
@@ -415,11 +415,11 @@ abstract class Pattern extends LXPattern {
     this.setColor(led.index, c);
   }
 
-  final float PI = Utils.PI;
-  final float HALF_PI = Utils.HALF_PI;
-  final float THIRD_PI = Utils.THIRD_PI;
-  final float QUARTER_PI = Utils.QUARTER_PI;
-  final float TWO_PI = Utils.TWO_PI;
+  public static final float PI = Utils.PI;
+  public static final float HALF_PI = Utils.HALF_PI;
+  public static final float THIRD_PI = Utils.THIRD_PI;
+  public static final float QUARTER_PI = Utils.QUARTER_PI;
+  public static final float TWO_PI = Utils.TWO_PI;
 
   public static final int millis() { return Utils.millis(); }
   public static final float abs(float n) { return Utils.abs(n); }
