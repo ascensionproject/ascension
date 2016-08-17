@@ -50,6 +50,7 @@ void setup() {
   model = loadModel();
   lx = new P3LX(this, model);
   lx.setPatterns(patterns(lx));
+  lx.addOutput(new PixelPusherOutput(lx));
   configureUI(lx);
   lx.engine.start();
 }

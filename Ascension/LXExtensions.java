@@ -11,6 +11,7 @@ import heronarts.lx.LX;
 import heronarts.lx.model.LXAbstractFixture;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.output.LXOutput;
 import heronarts.lx.pattern.LXPattern;
 
 import com.heroicrobot.dropbit.registry.*;
@@ -241,16 +242,6 @@ class LED extends LXPoint {
     }
   }
 
-  public void pushColor(int color) {
-    if (this.ppStripIndex == -1) return;
-    List<Strip> ppStrips = this.ppRegistry.getStrips(this.ppGroup);
-
-    if (ppStrips.size() < this.ppStripIndex) return;
-
-    Strip strip = ppStrips.get(this.ppStripIndex - 1);
-    strip.setPixel(color, this.ppLedIndex);
-  }
-
 }
 
 class HeartLED extends LED {
@@ -384,6 +375,33 @@ class RootLED extends LED {
   }
 }
 
+class PixelPusherOutput extends LXOutput {
+
+  private final Model model;
+
+  PixelPusherOutput(LX lx) {
+    super(lx);
+    model = (Model)lx.model;
+  }
+
+  public void onSend(int[] colors) {
+    for (LED led : model.leds) {
+      pushColor(led, colors[led.index]);
+    }
+  }
+
+  private void pushColor(LED led, int color) {
+    if (led.ppStripIndex == -1) return;
+    List<Strip> ppStrips = led.ppRegistry.getStrips(led.ppGroup);
+
+    if (ppStrips.size() < led.ppStripIndex) return;
+
+    Strip strip = ppStrips.get(led.ppStripIndex - 1);
+    strip.setPixel(color, led.ppLedIndex);
+  }
+
+}
+
 abstract class Pattern extends LXPattern {
 
   protected Model model;
@@ -395,7 +413,6 @@ abstract class Pattern extends LXPattern {
 
   public void setLEDColor(LED led, int c) {
     this.setColor(led.index, c);
-    led.pushColor(c);
   }
 
   final float PI = Utils.PI;
