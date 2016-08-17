@@ -3,10 +3,12 @@ import heronarts.lx.modulator.*;
 import heronarts.lx.parameter.*;
 import heronarts.p3lx.*;
 
+import java.util.*;
+
 class TrunkPhiTestPattern extends Pattern {
-  
+
   DiscreteParameter curPhi = new DiscreteParameter("phi", 10);
-  
+
   TrunkPhiTestPattern(P3LX lx) {
     super(lx);
     addParameter(curPhi);
@@ -36,10 +38,10 @@ class TrunkPhiTestPattern extends Pattern {
 }
 
 class HeartPhiTestPattern extends Pattern {
-  
+
   DiscreteParameter curPhi = new DiscreteParameter("phi", -1, 11);
   Accelerator time = new Accelerator(0, 1, 0);
-  
+
   HeartPhiTestPattern(P3LX lx) {
     super(lx);
     addParameter(curPhi);
@@ -106,9 +108,9 @@ class PulsePattern extends Pattern {
         setLEDColor(led, off);
         continue;
       }
-      
+
       c = lx.hsb(param*360, 100, 100);
-      
+
       if (locOverride.getValuei() == -1) {
         if (abs(param - location.getValuef()) % 1.0f < 0.02f) {
           setLEDColor(led, c);
@@ -129,7 +131,7 @@ class PulsePattern extends Pattern {
 class HeartRadiusTestPattern extends Pattern {
 
   SinLFO globalFade = new SinLFO(0, 360, 10000);
-  SawLFO heartFade = new SawLFO(360, 0, 10000);
+  SawLFO heartFade = new SawLFO(360, 0, 2000);
 
   HeartRadiusTestPattern(P3LX lx) {
     super(lx);
@@ -190,21 +192,18 @@ class HeartShellTestPattern extends Pattern {
 
 class TrunkLengthRainbowPattern extends Pattern {
 
-  //SinLFO globalFade = new SinLFO(0, 360, 10000);
-  //SawLFO rootFade = new SawLFO(360, 0, 10000);
+  SinLFO globalFade = new SinLFO(0, 360, 10000);
 
   TrunkLengthRainbowPattern(P3LX lx) {
     super(lx);
-    //addModulator(globalFade).start();
-    //addModulator(rootFade).start();
+    this.addModulator(globalFade).start();
   }
 
   public void run(double deltaMs) {
-    int c; // = lx.hsb(globalFade.getValuef(), 100, 80);
-
+    int c;
     // Fade around base with saw wave
     for (TrunkLED led : model.trunks.leds) {
-      c = lx.hsb(led.normalizedTrunkDistance * 360, 100, 80);
+      c = lx.hsb(led.normalizedTrunkDistance * 360 + globalFade.getValuef(), 100, 80);
       setLEDColor(led, c);
     }
   }
@@ -235,21 +234,67 @@ class PlantHeartWavePattern extends Pattern {
       c = lx.hsb(144, 100, b);
       setLEDColor(led, c);
     }
-    
+
     // Slowly beat heart by shells
     for (HeartLED led : model.heart.leds) {
       c = lx.hsb(324, 90, 40 + 10 * sin(led.heartShell/2.0f - time.getValuef()/4.0f));
       setLEDColor(led, c);
     }
-    
+
     c = lx.hsb(144, 100, 44);
     for (LeafLED led : model.leaves.leds) {
       setLEDColor(led, c);
     }
-    
+
     for (TrunkLED led : model.trunks.leds) {
       setLEDColor(led, c);
     }
-    
+
   }
 }
+
+//class SpottedHeartPattern extends Pattern {
+
+//  List<Spot> spots;
+
+//  Accelerator time = new Accelerator(0, 1, 0);
+
+
+//  SpottedHeartPattern(P3LX lx) {
+//    super(lx);
+//    addModulator(time).start();
+//  }
+
+//  void run(double deltaMs) {
+//    int c;
+
+//    // Fade around base with saw wave
+//    for (TrunkLED led : model.trunks.leds) {
+//      c = lx.hsb(led.normalizedTrunkDistance * 360, 100, 80);
+//      setLEDColor(led, c);
+//    }
+//  }
+
+//  class Spot {
+//    float phi, theta;
+//    //float radius;
+//    int color;
+//    long startTime;
+
+//    static const float totalLife = 6.0;
+//    static const float maxRadius = 0.02;
+
+//    Spot(float aPhi, float aTheta, float startTime) {
+//      //this.radius = 0;
+//      this.phi = aPhi;
+//      this.theta = aTheta;
+//      this.startTime = (new Date()).getTime();
+//    }
+
+//    float getRadius(float curTime) {
+//      float lifetime = curTime - this.startTime;
+//      float scale = maxRadius/pow(totalLife/2,2);
+//      return lifetime < totalLife ? scale*lifetime*(this.totalLife - lifetime) : 0.0;
+//    }
+//  }
+//}
