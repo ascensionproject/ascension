@@ -1,6 +1,91 @@
-// Change this to the name of your pattern, e.g. FirePattern, LightsaberPattern
-class BoilerplatePattern extends Pattern {
+import heronarts.lx.color.*;
+import heronarts.lx.modulator.*;
+import heronarts.lx.parameter.*;
+import heronarts.p3lx.*;
 
+ /**
+  * A basic example lighting Ascension in one color
+  **/
+
+class SolidColorExamplePattern extends Pattern {
+
+  SolidColorExamplePattern(P3LX lx) {
+    super(lx);
+  }
+
+  public void run(double deltaMs) {
+    
+    // set everything to teal
+    int c = lx.hsb(200, 100, 100);
+    for (LED led : model.leds) {
+      setLEDColor(led, c);
+    }
+  }
+}
+ 
+ /**
+  * A static example showing the different parts of Ascension
+  **/
+
+class StaticPartsExamplePattern extends Pattern {
+
+  StaticPartsExamplePattern(P3LX lx) {
+    super(lx);
+  }
+
+  public void run(double deltaMs) {
+    
+    // make roots dark-green
+    int rootC = lx.hsb(144, 70, 30);
+    for (RootLED led : model.roots.leds) {
+      setLEDColor(led, rootC);
+    }
+    
+    // Turn the heart red
+    for (HeartLED led : model.heart.leds) {
+      
+      // there are a little over 30 concentric "heart" shells on the heart
+      int t = led.heartShell;
+      
+      int heartC = lx.hsb(324, 90, 80-2*t); // red
+      setLEDColor(led, heartC);
+    }
+
+    // make leaves lighter green
+    int leafC = lx.hsb(100, 100, 80);
+    for (LeafLED led : model.leaves.leds) {
+      setLEDColor(led, leafC);
+    }
+    
+    // make trunk fade between the two greens
+    for (TrunkLED led : model.trunks.leds) {
+      
+      // normalizedTrunkDistance is a float between 0 and 1
+      // which gives us the distance along the trunk section
+      // between the roots and the leaves
+      // 0 = at the roots
+      // 1 = at the leaves
+      float t = led.normalizedTrunkDistance;
+      
+      // lerp is a function that interpolates between colors
+      // there are some nice utilities in LXColor
+      // take some time to check them out
+      int c = LXColor.lerp(
+                rootC,
+                leafC,
+                t
+              );
+      setLEDColor(led, c);
+    }
+    
+  }
+}
+
+ /**
+  * Let's animate things
+  **/
+
+class BasicAnimationPattern extends Pattern {
   // Parameters are values you can change from the UI
   // access them in the run method using parameterName.getValue()
   // Which parameter you use depends on the type of value you want to store:
@@ -50,7 +135,7 @@ class BoilerplatePattern extends Pattern {
   SinLFO modulatorName = new SinLFO(0, 360, 10000);
 
   // Make sure to change the name here to match your pattern class name above
-  BoilerplatePattern(P3LX lx) {
+  BasicAnimationPattern(P3LX lx) {
     super(lx);
 
     // Add each parameter here, to add it to the UI
@@ -61,7 +146,7 @@ class BoilerplatePattern extends Pattern {
   }
 
   // This method gets called once per frame, typically 60 times per second.
-  void run(double deltaMs) {
+  public void run(double deltaMs) {
     // Write your pattern logic here.
     //
     // Define modulators above to simplify things as much as you can,
@@ -77,33 +162,6 @@ class BoilerplatePattern extends Pattern {
     int c = lx.hsb(modulatorName.getValuef(), 100, 80);
     // Iterate over all LEDs
     for (LED led : model.leds) {
-      setLEDColor(led, c);
-    }
-  }
-}
-
-
-class ModelTestPattern extends Pattern {
-
-  SinLFO globalFade = new SinLFO(0, 360, 10000);
-  SawLFO rootFade = new SawLFO(360, 0, 10000);
-
-  ModelTestPattern(P3LX lx) {
-    super(lx);
-    addModulator(globalFade).start();
-    addModulator(rootFade).start();
-  }
-
-  void run(double deltaMs) {
-    // Fade entire model with sin wave
-    int c = lx.hsb(globalFade.getValuef(), 100, 80);
-    //for (LXPoint point : model.points) {
-    //  setLEDColor(point.index, c);
-    //}
-
-    // Fade around base with saw wave
-    for (RootLED led : model.roots.leds) {
-      c = lx.hsb(led.normalizedBasePath * 360 + rootFade.getValuef(), 100, 80);
       setLEDColor(led, c);
     }
   }

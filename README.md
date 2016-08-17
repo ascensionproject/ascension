@@ -20,7 +20,7 @@ class SolidColorExamplePattern extends Pattern {
     super(lx);
   }
 
-  void run(double deltaMs) {
+  public void run(double deltaMs) {
 
     // set everything to teal
     int c = lx.hsb(200, 100, 100);
@@ -56,7 +56,7 @@ class StaticPartsExamplePattern extends Pattern {
     super(lx);
   }
 
-  void run(double deltaMs) {
+  public void run(double deltaMs) {
     
     // make roots dark-green
     int rootC = lx.hsb(144, 70, 30);

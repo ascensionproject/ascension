@@ -1,3 +1,8 @@
+import heronarts.lx.color.*;
+import heronarts.lx.modulator.*;
+import heronarts.lx.parameter.*;
+import heronarts.p3lx.*;
+
 class TrunkPhiTestPattern extends Pattern {
   
   DiscreteParameter curPhi = new DiscreteParameter("phi", 10);
@@ -7,7 +12,7 @@ class TrunkPhiTestPattern extends Pattern {
     addParameter(curPhi);
   }
 
-  void run(double deltaMs) {
+  public void run(double deltaMs) {
     int off = lx.hsb(0, 0, 0);
 
     // shoot around base at constant speed
@@ -41,7 +46,7 @@ class HeartPhiTestPattern extends Pattern {
     addModulator(time).start();
   }
 
-  void run(double deltaMs) {
+  public void run(double deltaMs) {
     int off = lx.hsb(0, 0, 0);
 
     int c1 = lx.hsb(230, 100, 100);
@@ -55,14 +60,14 @@ class HeartPhiTestPattern extends Pattern {
         float x1 = heartLed.thetaY;
         float x2 = heartLed.phiY*2;
         float t = time.getValuef();
-        float b = sin( 6 * x1 + 0.3 * t);
-        b += 0.5 * cos( 14 * x2 - 0.06 * t);
-        b += 0.5 * cos( 11.3 * x2 + 0.092 * t);
-        b += sin( 6 * x2 - 0.3 * t);
-        b -= 0.5 * cos( x1 + 0.1 * t);
-        b -= cos( 3 * x1 - 0.072 * t);
-        b += 0.3 * cos( 12 * x2 + 0.2 * t);
-        b *= b/4.3/4.3;
+        float b = sin( 6 * x1 + 0.3f * t);
+        b += 0.5f * cos( 14 * x2 - 0.06f * t);
+        b += 0.5f * cos( 11.3f * x2 + 0.092f * t);
+        b += sin( 6 * x2 - 0.3f * t);
+        b -= 0.5f * cos( x1 + 0.1f * t);
+        b -= cos( 3 * x1 - 0.072f * t);
+        b += 0.3f * cos( 12 * x2 + 0.2f * t);
+        b *= b/4.3f/4.3f;
         c = LXColor.lerp(c1,c2,b);
         setLEDColor(led, c);
       } else {
@@ -84,7 +89,7 @@ class PulsePattern extends Pattern {
     addParameter(locOverride);
   }
 
-  void run(double deltaMs) {
+  public void run(double deltaMs) {
     int off = lx.hsb(0, 0, 0);
 
     // shoot around base at constant speed
@@ -105,13 +110,13 @@ class PulsePattern extends Pattern {
       c = lx.hsb(param*360, 100, 100);
       
       if (locOverride.getValuei() == -1) {
-        if (abs(param - location.getValuef()) % 1.0 < 0.02) {
+        if (abs(param - location.getValuef()) % 1.0f < 0.02f) {
           setLEDColor(led, c);
         } else {
           setLEDColor(led, off);
         }
       } else {
-        if (abs(param - (locOverride.getValuei() / 100.0)) % 1.0 < 0.02) {
+        if (abs(param - (locOverride.getValuei() / 100.0f)) % 1.0f < 0.02f) {
           setLEDColor(led, c);
         } else {
           setLEDColor(led, off);
@@ -132,7 +137,7 @@ class HeartRadiusTestPattern extends Pattern {
     addModulator(heartFade).start();
   }
 
-  void run(double deltaMs) {
+  public void run(double deltaMs) {
     // Fade entire model with sin wave
     int c = lx.hsb(globalFade.getValuef(), 100, 80);
     for (LED led : model.leds) {
@@ -164,7 +169,7 @@ class HeartShellTestPattern extends Pattern {
     addParameter(curStrip);
   }
 
-  void run(double deltaMs) {
+  public void run(double deltaMs) {
     int c = lx.hsb(0, 0, 0);
     for (LED led : model.leds) {
       setLEDColor(led, c);
@@ -172,7 +177,7 @@ class HeartShellTestPattern extends Pattern {
 
     c= lx.hsb(180, 100, 80);
     for (HeartLED led : model.heart.leds) {
-      if ( (-1 == curSide.getValuei() || led.isFront ^ boolean(curSide.getValuei()))
+      if ( (-1 == curSide.getValuei()|| led.isFront ^ (curSide.getValuei() != 0))
         && (-1 == curShell.getValuei() || led.heartShell == curShell.getValuei())
         && (-1 == curStrip.getValuei() || led.stripIndex == curStrip.getValuei())
         ) {
@@ -194,7 +199,7 @@ class TrunkLengthRainbowPattern extends Pattern {
     //addModulator(rootFade).start();
   }
 
-  void run(double deltaMs) {
+  public void run(double deltaMs) {
     int c; // = lx.hsb(globalFade.getValuef(), 100, 80);
 
     // Fade around base with saw wave
@@ -216,24 +221,24 @@ class PlantHeartWavePattern extends Pattern {
     //addModulator(rootFade).start();
   }
 
-  void run(double deltaMs) {
+  public void run(double deltaMs) {
     int c; // = lx.hsb(globalFade.getValuef(), 100, 80);
 
     // Fade around base interference model
     for (RootLED led : model.roots.leds) {
       float x = led.normalizedBasePath;
       float t = time.getValuef();
-      float b = sin( 6 * x + 0.3 * t);
-      b += cos( 14 * x - 0.06 * t);
-      b -= 0.5 * cos( x + 0.1 * t);
-      b *= b*100/2.5/2.5;
+      float b = sin( 6 * x + 0.3f * t);
+      b += cos( 14 * x - 0.06f * t);
+      b -= 0.5f * cos( x + 0.1f * t);
+      b *= b*100/2.5f/2.5f;
       c = lx.hsb(144, 100, b);
       setLEDColor(led, c);
     }
     
     // Slowly beat heart by shells
     for (HeartLED led : model.heart.leds) {
-      c = lx.hsb(324, 90, 40 + 10 * sin(led.heartShell/2.0 - time.getValuef()/4.0));
+      c = lx.hsb(324, 90, 40 + 10 * sin(led.heartShell/2.0f - time.getValuef()/4.0f));
       setLEDColor(led, c);
     }
     
