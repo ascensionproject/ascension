@@ -397,4 +397,33 @@ abstract class Pattern extends LXPattern {
     this.setColor(led.index, c);
     led.pushColor(c);
   }
+
+  final float PI = Utils.PI;
+  final float HALF_PI = Utils.HALF_PI;
+  final float THIRD_PI = Utils.THIRD_PI;
+  final float QUARTER_PI = Utils.QUARTER_PI;
+  final float TWO_PI = Utils.TWO_PI;
+
+  public static final int millis() { return Utils.millis(); }
+  public static final float abs(float n) { return Utils.abs(n); }
+  public static final int abs(int n) { return Utils.abs(n); }
+  public static final float sqrt(float n) { return Utils.sqrt(n); }
+  public static final float pow(float n, float e) { return Utils.pow(n, e); }
+  public static final int max(int a, int b) { return Utils.max(a, b); }
+  public static final float max(float a, float b) { return Utils.max(a, b); }
+  public static final int min(int a, int b) { return Utils.min(a, b); }
+  public static final float min(float a, float b) { return Utils.min(a, b); }
+  public static final int constrain(int amt, int low, int high) { return Utils.constrain(amt, low, high); }
+  public static final float constrain(float amt, float low, float high) { return Utils.constrain(amt, low, high); }
+  public static final float sin(float angle) { return Utils.sin(angle); }
+  public static final float cos(float angle) { return Utils.cos(angle); }
+  public static final float asin(float value) { return Utils.asin(value); }
+  public static final float acos(float value) { return Utils.acos(value); }
+  public static final float atan2(float y, float x) { return Utils.atan2(x, y); }
+  public static final int ceil(float n) { return Utils.ceil(n); }
+  public static final int floor(float n) { return Utils.floor(n); }
+  public static final float lerp(float start, float stop, float amt) { return Utils.lerp(start, stop, amt); }
+  public static final float random(float high) { return Utils.random(high); }
+  public static final float random(float low, float high) { return Utils.random(low, high); }
+
 }
