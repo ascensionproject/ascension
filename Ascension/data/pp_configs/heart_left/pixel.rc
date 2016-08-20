@@ -5,15 +5,25 @@ gateway=192.168.1.1
 group=5
 
 pixels=400
-stripsattached=2
+stripsattached=8
 controller=0
 
 strip1=apa102
 strip2=apa102
 strip3=apa102
+strip4=apa102
+strip5=apa102
+strip6=apa102
+strip7=apa102
+strip8=apa102
 
 start1=000001
 start2=000001
 start3=000001
+start4=000001
+start5=000001
+start6=000001
+start7=000001
+start8=000001
 
-swap=123
+swap=12345678
