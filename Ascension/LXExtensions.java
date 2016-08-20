@@ -402,7 +402,7 @@ class PixelPusherOutput extends LXOutput {
 
 }
 
-public abstract class Pattern extends LXPattern {
+abstract class Pattern extends LXPattern {
 
   protected final Model model;
 
