@@ -1,7 +1,7 @@
+import heronarts.lx.*;
 import heronarts.lx.color.*;
 import heronarts.lx.modulator.*;
 import heronarts.lx.parameter.*;
-import heronarts.p3lx.*;
 
 // Change this to the name of your pattern, e.g. FirePattern, LightsaberPattern
 class BoilerplatePattern extends Pattern {
@@ -55,7 +55,7 @@ class BoilerplatePattern extends Pattern {
   SinLFO modulatorName = new SinLFO(0, 360, 10000);
 
   // Make sure to change the name here to match your pattern class name above
-  BoilerplatePattern(P3LX lx) {
+  BoilerplatePattern(LX lx) {
     super(lx);
 
     // Add each parameter here, to add it to the UI
@@ -93,7 +93,7 @@ class ModelTestPattern extends Pattern {
   SinLFO globalFade = new SinLFO(0, 360, 10000);
   SawLFO rootFade = new SawLFO(360, 0, 10000);
 
-  ModelTestPattern(P3LX lx) {
+  ModelTestPattern(LX lx) {
     super(lx);
     addModulator(globalFade).start();
     addModulator(rootFade).start();

@@ -16,7 +16,7 @@ In it, there's a class called `StaticPartsExamplePattern`.
 
 class SolidColorExamplePattern extends Pattern {
 
-  SolidColorExamplePattern(P3LX lx) {
+  SolidColorExamplePattern(LX lx) {
     super(lx);
   }
 
@@ -52,7 +52,7 @@ Below, we have a mostly basic class to light each part up in a different color, 
 
 class StaticPartsExamplePattern extends Pattern {
 
-  StaticPartsExamplePattern(P3LX lx) {
+  StaticPartsExamplePattern(LX lx) {
     super(lx);
   }
 
