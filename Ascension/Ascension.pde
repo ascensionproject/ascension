@@ -1,3 +1,10 @@
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.effects.*;
+import ddf.minim.signals.*;
+import ddf.minim.spi.*;
+import ddf.minim.ugens.*;
+
 import java.util.*;
 
 import com.heroicrobot.dropbit.registry.*;
@@ -18,7 +25,8 @@ LXPattern[] patterns(P3LX lx) {
     new ModelTestPattern(lx),
     new AmirRandomPlay(lx),
     new AmirRegisterPlay(lx),
-    new AmirSphere(lx)
+    new AmirSphere(lx),
+    new SoundHistogram(lx),
   };
 }
 

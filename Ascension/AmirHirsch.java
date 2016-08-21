@@ -1,10 +1,18 @@
 import heronarts.lx.color.*;
+import heronarts.lx.audio.*;
+import heronarts.lx.audio.DecibelMeter;
 import heronarts.lx.modulator.*;
 import heronarts.lx.parameter.*;
 import heronarts.lx.model.LXPoint;
 import heronarts.p3lx.*;
 import java.util.List;
 
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.effects.*;
+import ddf.minim.signals.*;
+import ddf.minim.spi.*;
+import ddf.minim.ugens.*;
 
 class AmirSphere extends Pattern {
   
@@ -224,5 +232,110 @@ class AmirRegisterPlay extends Pattern {
      
      
 
+  }
+}
+
+
+class AmirAudio extends Pattern {
+  private Minim minim;
+  private AudioInput in;
+    private double timeSinceLast;
+    private BasicParameter brightParameter = new BasicParameter("bright", 50, 1, 100); 
+  private BasicParameter radiusParameter = new BasicParameter("radius", 50, 1, 10000); 
+  private BasicParameter xParameter = new BasicParameter("x", 50, -360, 5000); 
+  private BasicParameter yParameter = new BasicParameter("y", 50, -360, 7500); 
+  private BasicParameter zParameter = new BasicParameter("z", 50, -360, 5000); 
+  private BasicParameter drdurParameter = new BasicParameter("drdur", 50, 0, 2000); 
+  private DecibelMeter dbm = null;
+  public AmirAudio(P3LX lx)
+  {
+   super(lx);
+     addParameter(brightParameter); 
+    addParameter(radiusParameter); 
+    addParameter(xParameter); 
+    addParameter(yParameter); 
+    addParameter(zParameter); 
+    addParameter(drdurParameter);
+   
+ //minim = new Minim(this);     
+   // in = minim.getLineIn();
+
+    // in.enableMonitoring();
+       dbm = new DecibelMeter(lx.audioInput());
+       addModulator(dbm).start();
+ }
+   
+   
+   public void onActive()  {
+    if (dbm == null)
+    {
+       dbm = new DecibelMeter(lx.audioInput());
+       addModulator(dbm).start();
+    }
+   }
+  public void run(double deltaMs) {
+    setColors(0); 
+    timeSinceLast += deltaMs;
+    int N = in.bufferSize();
+    float sqsm = 0 ;
+    for(int i = 0; i < N - 1; i++)
+    {
+       float l = in.left.get(i);
+       float r = in.right.get(i);
+       sqsm = (l*l + r*r)/2;
+    }
+    float energy = dbm.getDecibelsf();//sqsm/N;
+     float r = radiusParameter.getValuef();// + dr.getValuef();
+    float x = xParameter.getValuef();
+    float y = yParameter.getValuef();
+    float z = zParameter.getValuef();
+    r +=energy;
+    for (LXPoint p : model.points)
+    {
+     float d2 = (p.x - x)*(p.x - x) + (p.y - y)*(p.y - y) + (p.z - z)*(p.z - z);
+     if (d2 < r*r)
+     {
+       colors[p.index] =  lx.hsb(180,100,brightParameter.getValuef());  
+     }
+    } 
+  }
+}
+
+
+class SoundHistogram extends Pattern {
+  private GraphicEQ eq = null;
+  BasicParameter hue = new BasicParameter("hue", 0,0,360);
+  BasicParameter sprd = new BasicParameter("sprd", 1,1,360);
+  BasicParameter rng = new BasicParameter("rng", 1,1,20);
+  BasicParameter gain = new BasicParameter("gain",1,0,100);
+     BasicParameter offsetx = new BasicParameter("x", 50, -360, 5000); 
+  public SoundHistogram(P3LX lx)
+  {
+    super(lx);
+    eq = new GraphicEQ(lx.audioInput());
+    eq.range.setValue(48);
+    eq.release.setValue(800);
+    addModulator(eq).start();
+    addParameter(hue);
+    addParameter(sprd);
+    addParameter(rng);
+  addParameter (gain);
+  addParameter (offsetx);
+  }
+
+  public void run(double deltaMs)
+  {
+    int j=0;
+    for (LXPoint p : model.points)
+    {
+      double val = eq.getBandf((int) (18*p.y/7500.0f) % 18)*18;
+      float g = gain.getValuef();
+      float x = offsetx.getValuef();
+      val = (x+ p.x) < (g*val) ? val : 0;
+      colors[p.index] = LXColor.hsb(hue.getValuef()+(val % rng.getValuef())*sprd.getValuef(),val*100 < 100 ? val*100 : 100, val*10 < 100 ? val*10 : 10);
+      
+    
+
+    }
   }
 }
