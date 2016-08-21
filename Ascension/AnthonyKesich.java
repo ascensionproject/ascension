@@ -37,6 +37,37 @@ class TrunkPhiTestPattern extends Pattern {
   }
 }
 
+class CandyCanesPattern extends Pattern {
+
+  Accelerator time = new Accelerator(0, 1, 0);
+
+  CandyCanesPattern(P3LX lx) {
+    super(lx);
+    addModulator(time).start();
+  }
+
+  public void run(double deltaMs) {
+    int off = lx.hsb(0, 0, 0);
+
+    int c;
+    int blue = lx.hsb(240, 100, 100);
+    int green = lx.hsb(120, 100, 100);
+    for (LED led : model.leds) {
+      float param = 0;
+      if (led instanceof TrunkLED) {
+        TrunkLED trunkLed = (TrunkLED) led;
+        double t = Math.sin(trunkLed.normalizedTrunkDistance*15*3.14 + trunkLed.phiIndex * 0.628 - time.getValuef()*12);
+        t += 1;
+        t /= 2;
+        setLEDColor(led, LXColor.lerp(blue, green, t));
+      } else {
+        setLEDColor(led, off);
+        continue;
+      }
+    }
+  }
+}
+
 class HeartPhiTestPattern extends Pattern {
 
   DiscreteParameter curPhi = new DiscreteParameter("phi", -1, 11);
