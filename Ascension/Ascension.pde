@@ -26,7 +26,8 @@ LXPattern[] patterns(P3LX lx) {
     new AmirRandomPlay(lx),
     new AmirRegisterPlay(lx),
     new AmirSphere(lx),
-    new SoundHistogram(lx),
+    new SoundHistogram(lx)
+    
   };
 }
 
