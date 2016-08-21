@@ -113,3 +113,25 @@ class ModelTestPattern extends Pattern {
     }
   }
 }
+
+class NormalizedHeartShellTestPattern extends Pattern {
+
+  SinLFO globalFade = new SinLFO(0, 360, 10000);
+  SawLFO heartFade = new SawLFO(360, 0, 2000);
+
+  NormalizedHeartShellTestPattern(LX lx) {
+    super(lx);
+    addModulator(globalFade).start();
+    addModulator(heartFade).start();
+  }
+
+  public void run(double deltaMs) {
+    // Fade entire model with sin wave
+    setColors(lx.hsb(globalFade.getValuef(), 100, 80));
+
+    // Fade around base with saw wave
+    for (HeartLED led : model.heart.leds) {
+      colors[led.index] = lx.hsb(500*led.normalizedHeartShell + heartFade.getValuef(), 100, 80);
+    }
+  }
+}
