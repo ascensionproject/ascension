@@ -1,7 +1,7 @@
-import heronarts.lx.*;
 import heronarts.lx.color.*;
 import heronarts.lx.modulator.*;
 import heronarts.lx.parameter.*;
+import heronarts.p3lx.*;
 
  /**
   * A basic example lighting Ascension in one color
@@ -9,7 +9,7 @@ import heronarts.lx.parameter.*;
 
 class SolidColorExamplePattern extends Pattern {
 
-  SolidColorExamplePattern(LX lx) {
+  SolidColorExamplePattern(P3LX lx) {
     super(lx);
   }
 
@@ -29,7 +29,7 @@ class SolidColorExamplePattern extends Pattern {
 
 class StaticPartsExamplePattern extends Pattern {
 
-  StaticPartsExamplePattern(LX lx) {
+  StaticPartsExamplePattern(P3LX lx) {
     super(lx);
   }
 
@@ -135,7 +135,7 @@ class BasicAnimationPattern extends Pattern {
   SinLFO modulatorName = new SinLFO(0, 360, 10000);
 
   // Make sure to change the name here to match your pattern class name above
-  BasicAnimationPattern(LX lx) {
+  BasicAnimationPattern(P3LX lx) {
     super(lx);
 
     // Add each parameter here, to add it to the UI
