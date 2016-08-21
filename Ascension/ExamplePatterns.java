@@ -16,7 +16,7 @@ class SolidColorExamplePattern extends Pattern {
   public void run(double deltaMs) {
     
     // set everything to teal
-    int c = lx.hsb(200, 100, 100);
+    int c = lx.hsb(200, 0, 100);
     for (LED led : model.leds) {
       setLEDColor(led, c);
     }
@@ -159,7 +159,7 @@ class BasicAnimationPattern extends Pattern {
     // If you don't set a color for a certain led this frame, it will
     // use the color from the last frame.
 
-    int c = lx.hsb(modulatorName.getValuef(), 100, 80);
+    int c = lx.hsb(modulatorName.getValuef(), 100, 30);
     // Iterate over all LEDs
     for (LED led : model.leds) {
       setLEDColor(led, c);

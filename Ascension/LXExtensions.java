@@ -226,13 +226,27 @@ class LED extends LXPoint {
 
     TableRow stripData = ppStripData.findRow(this.segmentId, "stripId");
     if (stripData != null) {
-      this.ppStripIndex = stripData.getInt("ppStrip");
-      this.ppGroup = stripData.getInt("ppGroup");
       if (stripData.getInt("reverse") == 1) {
-        this.ppLedIndex = (stripData.getInt("stripLength") - this.ledIndex)
-                          + stripData.getInt("indexOffset");
+        if (stripData.getInt("stripLength") <= this.ledIndex) {
+          this.ppGroup = -1;
+          this.ppLedIndex = -1;
+          this.ppStripIndex = -1;
+        } else {
+          this.ppStripIndex = stripData.getInt("ppStrip");
+          this.ppGroup = stripData.getInt("ppGroup");
+          this.ppLedIndex = (stripData.getInt("stripLength") - this.ledIndex)
+                            + stripData.getInt("indexOffset");
+        }
       } else {
-        this.ppLedIndex = this.ledIndex + stripData.getInt("indexOffset");
+        if (stripData.getInt("stripLength") <= this.ledIndex) {
+          this.ppGroup = -1;
+          this.ppLedIndex = -1;
+          this.ppStripIndex = -1;
+        } else {
+          this.ppStripIndex = stripData.getInt("ppStrip");
+          this.ppGroup = stripData.getInt("ppGroup");
+          this.ppLedIndex = this.ledIndex + stripData.getInt("indexOffset");
+        }
       }
     } else {
       // not in the csv yet

@@ -156,10 +156,11 @@ class HeartRadiusTestPattern extends Pattern {
 
 class HeartShellTestPattern extends Pattern {
 
+  static final int INITIAL_STRIP = 19;
 
   Click increment = new Click(700);
   DiscreteParameter curShell = new DiscreteParameter("shell", -1, 56);
-  DiscreteParameter curStrip = new DiscreteParameter("strip", -1, 56);
+  DiscreteParameter curStrip = new DiscreteParameter("strip", INITIAL_STRIP, -1, 56);
   DiscreteParameter curSide = new DiscreteParameter("side", -1, 2);
 
   //int curStrip = 0;
@@ -237,7 +238,7 @@ class PlantHeartWavePattern extends Pattern {
 
     // Slowly beat heart by shells
     for (HeartLED led : model.heart.leds) {
-      c = lx.hsb(324, 90, 40 + 10 * sin(led.heartShell/2.0f - time.getValuef()/4.0f));
+      c = lx.hsb(324, 90, 40 + 40 * sin(led.heartShell/2.0f - time.getValuef()/1.0f));
       setLEDColor(led, c);
     }
 

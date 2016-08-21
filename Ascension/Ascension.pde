@@ -84,8 +84,8 @@ void configureUI(P3LX lx) {
   context3d.addComponent(new UIPointCloud(lx, lx.model))
     //.setCenter(model.cx, 500, model.cz)
     //.setRadius(2000);
-    .setCenter(model.cx, model.cy, model.cz)
-    .setRadius(8000);
+    .setCenter(model.cx, model.heart.cy, model.cz)
+    .setRadius(3000);
   lx.ui.addLayer(context3d);
 
   lx.ui.addLayer(new UIChannelControl(lx.ui, lx, 4, 4));
