@@ -1,15 +1,15 @@
+import java.util.*;
+
+import heronarts.lx.*;
 import heronarts.lx.color.*;
 import heronarts.lx.modulator.*;
 import heronarts.lx.parameter.*;
-import heronarts.p3lx.*;
-
-import java.util.*;
 
 class TrunkPhiTestPattern extends Pattern {
 
   DiscreteParameter curPhi = new DiscreteParameter("phi", 10);
 
-  TrunkPhiTestPattern(P3LX lx) {
+  TrunkPhiTestPattern(LX lx) {
     super(lx);
     addParameter(curPhi);
   }
@@ -42,7 +42,7 @@ class HeartPhiTestPattern extends Pattern {
   DiscreteParameter curPhi = new DiscreteParameter("phi", -1, 11);
   Accelerator time = new Accelerator(0, 1, 0);
 
-  HeartPhiTestPattern(P3LX lx) {
+  HeartPhiTestPattern(LX lx) {
     super(lx);
     addParameter(curPhi);
     addModulator(time).start();
@@ -85,7 +85,7 @@ class PulsePattern extends Pattern {
   Accelerator location = new Accelerator(0, 0.4, 0);
   DiscreteParameter locOverride = new DiscreteParameter("override", -1, 100);
 
-  PulsePattern(P3LX lx) {
+  PulsePattern(LX lx) {
     super(lx);
     addModulator(location).start();
     addParameter(locOverride);
@@ -133,7 +133,7 @@ class HeartRadiusTestPattern extends Pattern {
   SinLFO globalFade = new SinLFO(0, 360, 10000);
   SawLFO heartFade = new SawLFO(360, 0, 2000);
 
-  HeartRadiusTestPattern(P3LX lx) {
+  HeartRadiusTestPattern(LX lx) {
     super(lx);
     addModulator(globalFade).start();
     addModulator(heartFade).start();
@@ -142,14 +142,14 @@ class HeartRadiusTestPattern extends Pattern {
   public void run(double deltaMs) {
     // Fade entire model with sin wave
     int c = lx.hsb(globalFade.getValuef(), 100, 80);
+    // setColors(c);
     for (LED led : model.leds) {
-      setLEDColor(led, c);
+      colors[led.index] = c;
     }
 
     // Fade around base with saw wave
     for (HeartLED led : model.heart.leds) {
-      c = lx.hsb((led.radius2D + heartFade.getValuef()) % 360, 100, 80);
-      setLEDColor(led, c);
+      colors[led.index] = lx.hsb(led.radius2D + heartFade.getValuef(), 100, 80);
     }
   }
 }
@@ -165,7 +165,7 @@ class HeartShellTestPattern extends Pattern {
 
   //int curStrip = 0;
 
-  HeartShellTestPattern(P3LX lx) {
+  HeartShellTestPattern(LX lx) {
     super(lx);
     addParameter(curSide);
     addParameter(curShell);
@@ -195,7 +195,7 @@ class TrunkLengthRainbowPattern extends Pattern {
 
   SinLFO globalFade = new SinLFO(0, 360, 10000);
 
-  TrunkLengthRainbowPattern(P3LX lx) {
+  TrunkLengthRainbowPattern(LX lx) {
     super(lx);
     this.addModulator(globalFade).start();
   }
@@ -215,7 +215,7 @@ class PlantHeartWavePattern extends Pattern {
   Accelerator time = new Accelerator(0, 1, 0);
   //SinLFO heartPulse = new SinLFO(10, 0, 20000);
 
-  PlantHeartWavePattern(P3LX lx) {
+  PlantHeartWavePattern(LX lx) {
     super(lx);
     addModulator(time).start();
     //addModulator(rootFade).start();

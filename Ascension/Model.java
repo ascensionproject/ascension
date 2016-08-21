@@ -1,22 +1,11 @@
-import java.util.ArrayList;
 import java.util.List;
-import java.lang.Math;
-import java.lang.System;
-
 
 import processing.data.Table;
 import processing.data.TableRow;
 
-import heronarts.lx.LX;
 import heronarts.lx.model.LXAbstractFixture;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.output.LXOutput;
-import heronarts.lx.pattern.LXPattern;
-
-import com.heroicrobot.dropbit.registry.*;
-import com.heroicrobot.dropbit.devices.pixelpusher.Strip;
-
 
 class Model extends LXModel {
 
@@ -27,8 +16,9 @@ class Model extends LXModel {
   final Trunks trunks;
   final Roots roots;
 
-  Model(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
-    super(new Fixture(ledData, ppStripData, ppRegistry));
+  @SuppressWarnings("unchecked")
+  Model(Table ledData, Table ppStripData) {
+    super(new Fixture(ledData, ppStripData));
     Fixture fixture = (Fixture)fixtures.get(0);
     leds = (List)fixture.getPoints();
     heart = fixture.heart;
@@ -42,11 +32,11 @@ class Model extends LXModel {
     final Leaves leaves;
     final Trunks trunks;
     final Roots roots;
-    Fixture(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
-      addPoints(heart = new Heart(ledData, ppStripData, ppRegistry));
-      addPoints(leaves = new Leaves(ledData, ppStripData, ppRegistry));
-      addPoints(trunks = new Trunks(ledData, ppStripData, ppRegistry));
-      addPoints(roots = new Roots(ledData, ppStripData, ppRegistry));
+    Fixture(Table ledData, Table ppStripData) {
+      addPoints(heart = new Heart(ledData, ppStripData));
+      addPoints(leaves = new Leaves(ledData, ppStripData));
+      addPoints(trunks = new Trunks(ledData, ppStripData));
+      addPoints(roots = new Roots(ledData, ppStripData));
     }
   }
 
@@ -56,17 +46,18 @@ class Heart extends LXModel {
 
   final List<HeartLED> leds;
 
-  Heart(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
-    super(new Fixture(ledData, ppStripData, ppRegistry));
+  @SuppressWarnings("unchecked")
+  Heart(Table ledData, Table ppStripData) {
+    super(new Fixture(ledData, ppStripData));
     Fixture fixture = (Fixture)fixtures.get(0);
     leds = (List)fixture.getPoints();
   }
 
   static class Fixture extends LXAbstractFixture {
-    Fixture(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
+    Fixture(Table ledData, Table ppStripData) {
       for (TableRow row : ledData.rows()) {
         if (!row.getString("section").equals("heart")) continue;
-        addPoint(new HeartLED(row, ppStripData, ppRegistry));
+        addPoint(new HeartLED(row, ppStripData));
       }
     }
   }
@@ -77,18 +68,19 @@ class Leaves extends LXModel {
 
   final List<LeafLED> leds;
 
-  Leaves(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
-    super(new Fixture(ledData, ppStripData, ppRegistry));
+  @SuppressWarnings("unchecked")
+  Leaves(Table ledData, Table ppStripData) {
+    super(new Fixture(ledData, ppStripData));
     Fixture fixture = (Fixture)fixtures.get(0);
     leds = (List)fixture.getPoints();
   }
 
   static class Fixture extends LXAbstractFixture {
-    Fixture(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
+    Fixture(Table ledData, Table ppStripData) {
       for (TableRow row : ledData.rows()) {
         if (!(row.getString("section").equals("trunk")
             && row.getString("subsection").equals("leaf"))) continue;
-        addPoint(new LeafLED(row, ppStripData, ppRegistry));
+        addPoint(new LeafLED(row, ppStripData));
       }
     }
   }
@@ -99,14 +91,15 @@ class Trunks extends LXModel {
 
   final List<TrunkLED> leds;
 
-  Trunks(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
-    super(new Fixture(ledData, ppStripData, ppRegistry));
+  @SuppressWarnings("unchecked")
+  Trunks(Table ledData, Table ppStripData) {
+    super(new Fixture(ledData, ppStripData));
     Fixture fixture = (Fixture)fixtures.get(0);
     leds = (List)fixture.getPoints();
   }
 
   static class Fixture extends LXAbstractFixture {
-    Fixture(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
+    Fixture(Table ledData, Table ppStripData) {
   float lastMaxDist, maxDist;
   float totalLength = -1;
   int lastStripNumber = -1;
@@ -134,7 +127,7 @@ class Trunks extends LXModel {
           float thisDist = row.getFloat("arc_length") + lastMaxDist;
 
           if (passNum == 1) {
-            addPoint(new TrunkLED(row, ppStripData, ppRegistry, thisDist, thisDist/totalLength));
+            addPoint(new TrunkLED(row, ppStripData, thisDist, thisDist/totalLength));
           }
 
           maxDist = Math.max(maxDist,thisDist);
@@ -162,8 +155,9 @@ class Roots extends LXModel {
     "right-outside-front-zouter", "right-outside-front-zinner"
   };
 
-  Roots(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
-    super(new Fixture(ledData, ppStripData, ppRegistry));
+  @SuppressWarnings("unchecked")
+  Roots(Table ledData, Table ppStripData) {
+    super(new Fixture(ledData, ppStripData));
     Fixture fixture = (Fixture)fixtures.get(0);
     leds = (List)fixture.getPoints();
     basePathCount = fixture.basePathCount;
@@ -171,10 +165,11 @@ class Roots extends LXModel {
 
   static class Fixture extends LXAbstractFixture {
     final int basePathCount;
-    Fixture(Table ledData, Table ppStripData, DeviceRegistry ppRegistry) {
+    @SuppressWarnings("unchecked")
+    Fixture(Table ledData, Table ppStripData) {
       for (TableRow row : ledData.rows()) {
         if (!row.getString("section").equals("root")) continue;
-        addPoint(new RootLED(row, ppStripData, ppRegistry));
+        addPoint(new RootLED(row, ppStripData));
       }
       List<RootLED> leds = (List)getPoints();
       int basePathIndex = 0;
@@ -210,15 +205,13 @@ class LED extends LXPoint {
   final boolean isLeft;
   final int stripIndex;
   final int ledIndex;
+
   final int ppLedIndex;
   final int ppStripIndex;
   final int ppGroup;
 
-  final DeviceRegistry ppRegistry;
-
-  LED(TableRow row, Table ppStripData, DeviceRegistry registry) {
+  LED(TableRow row, Table ppStripData) {
     super(row.getFloat("x"), row.getFloat("z"), -row.getFloat("y"));
-    this.ppRegistry = registry;
     this.segmentId = row.getString("segment_id");
     this.isLeft = row.getString("right_left").equals("left");
     this.stripIndex = row.getInt("strip_number")-1;
@@ -226,25 +219,17 @@ class LED extends LXPoint {
 
     TableRow stripData = ppStripData.findRow(this.segmentId, "stripId");
     if (stripData != null) {
-      if (stripData.getInt("reverse") == 1) {
-        if (stripData.getInt("stripLength") <= this.ledIndex) {
-          this.ppGroup = -1;
-          this.ppLedIndex = -1;
-          this.ppStripIndex = -1;
-        } else {
-          this.ppStripIndex = stripData.getInt("ppStrip");
-          this.ppGroup = stripData.getInt("ppGroup");
+      if (stripData.getInt("stripLength") <= this.ledIndex) {
+        this.ppGroup = -1;
+        this.ppLedIndex = -1;
+        this.ppStripIndex = -1;
+      } else {
+        this.ppStripIndex = stripData.getInt("ppStrip");
+        this.ppGroup = stripData.getInt("ppGroup");
+        if (stripData.getInt("reverse") == 1) {
           this.ppLedIndex = (stripData.getInt("stripLength") - this.ledIndex)
                             + stripData.getInt("indexOffset");
-        }
-      } else {
-        if (stripData.getInt("stripLength") <= this.ledIndex) {
-          this.ppGroup = -1;
-          this.ppLedIndex = -1;
-          this.ppStripIndex = -1;
         } else {
-          this.ppStripIndex = stripData.getInt("ppStrip");
-          this.ppGroup = stripData.getInt("ppGroup");
           this.ppLedIndex = this.ledIndex + stripData.getInt("indexOffset");
         }
       }
@@ -309,8 +294,8 @@ class HeartLED extends LED {
    18,
   };
 
-  HeartLED(TableRow row, Table ppStripData, DeviceRegistry ppRegistry) {
-    super(row, ppStripData, ppRegistry);
+  HeartLED(TableRow row, Table ppStripData) {
+    super(row, ppStripData);
     this.isFront = row.getString("front_back").equals("front");
     
     float localX = this.x - this.centerX;
@@ -343,8 +328,8 @@ class HeartLED extends LED {
 
 class LeafLED extends LED {
 
-  LeafLED(TableRow row, Table ppStripData, DeviceRegistry ppRegistry) {
-    super(row, ppStripData, ppRegistry);
+  LeafLED(TableRow row, Table ppStripData) {
+    super(row, ppStripData);
   }
 
 }
@@ -357,10 +342,9 @@ class TrunkLED extends LED {
   TrunkLED(
           TableRow row,
           Table ppStripData,
-          DeviceRegistry ppRegistry,
           float dist,
           float normDist) {
-    super(row, ppStripData, ppRegistry);
+    super(row, ppStripData);
     this.trunkDistance = dist;
     this.normalizedTrunkDistance = normDist;
     this.phiIndex = row.getInt("arc_strip_num");
@@ -377,8 +361,8 @@ class RootLED extends LED {
 
   String basePathString;
 
-  RootLED(TableRow row, Table ppStripData, DeviceRegistry ppRegistry) {
-    super(row, ppStripData, ppRegistry);
+  RootLED(TableRow row, Table ppStripData) {
+    super(row, ppStripData);
     this.isInside = row.getString("subsection").equals("inside");
     this.isFront = row.getString("front_back").equals("front");
     this.basePathString = row.getString("right_left") + "-"
@@ -387,74 +371,4 @@ class RootLED extends LED {
       this.basePathString += "-z" + (stripIndex < 3 ? "outer" : "inner");
     }
   }
-}
-
-class PixelPusherOutput extends LXOutput {
-
-  private final Model model;
-
-  PixelPusherOutput(LX lx) {
-    super(lx);
-    model = (Model)lx.model;
-  }
-
-  public void onSend(int[] colors) {
-    for (LED led : model.leds) {
-      pushColor(led, colors[led.index]);
-    }
-  }
-
-  private void pushColor(LED led, int color) {
-    if (led.ppStripIndex == -1) return;
-    List<Strip> ppStrips = led.ppRegistry.getStrips(led.ppGroup);
-
-    if (ppStrips.size() < led.ppStripIndex) return;
-
-    Strip strip = ppStrips.get(led.ppStripIndex - 1);
-    strip.setPixel(color, led.ppLedIndex);
-  }
-
-}
-
-abstract class Pattern extends LXPattern {
-
-  protected final Model model;
-
-  public Pattern(LX lx) {
-    super(lx);
-    this.model = (Model)super.model;
-  }
-
-  public void setLEDColor(LED led, int c) {
-    this.setColor(led.index, c);
-  }
-
-  public static final float PI = Utils.PI;
-  public static final float HALF_PI = Utils.HALF_PI;
-  public static final float THIRD_PI = Utils.THIRD_PI;
-  public static final float QUARTER_PI = Utils.QUARTER_PI;
-  public static final float TWO_PI = Utils.TWO_PI;
-
-  public static final int millis() { return Utils.millis(); }
-  public static final float abs(float n) { return Utils.abs(n); }
-  public static final int abs(int n) { return Utils.abs(n); }
-  public static final float sqrt(float n) { return Utils.sqrt(n); }
-  public static final float pow(float n, float e) { return Utils.pow(n, e); }
-  public static final int max(int a, int b) { return Utils.max(a, b); }
-  public static final float max(float a, float b) { return Utils.max(a, b); }
-  public static final int min(int a, int b) { return Utils.min(a, b); }
-  public static final float min(float a, float b) { return Utils.min(a, b); }
-  public static final int constrain(int amt, int low, int high) { return Utils.constrain(amt, low, high); }
-  public static final float constrain(float amt, float low, float high) { return Utils.constrain(amt, low, high); }
-  public static final float sin(float angle) { return Utils.sin(angle); }
-  public static final float cos(float angle) { return Utils.cos(angle); }
-  public static final float asin(float value) { return Utils.asin(value); }
-  public static final float acos(float value) { return Utils.acos(value); }
-  public static final float atan2(float y, float x) { return Utils.atan2(x, y); }
-  public static final int ceil(float n) { return Utils.ceil(n); }
-  public static final int floor(float n) { return Utils.floor(n); }
-  public static final float lerp(float start, float stop, float amt) { return Utils.lerp(start, stop, amt); }
-  public static final float random(float high) { return Utils.random(high); }
-  public static final float random(float low, float high) { return Utils.random(low, high); }
-
 }
