@@ -257,6 +257,7 @@ class HeartLED extends LED {
   final float thetaY, thetaZ;
   final float phiY, phiZ;
   final int heartShell;
+  final float normalizedHeartShell;
 
   final static int[] firstShellBack = {
     0,    0,    0,    0,    0,
@@ -321,11 +322,16 @@ class HeartLED extends LED {
     this.thetaZ = (float)Math.atan2(-localX, localY);
     this.phiZ = (float)Math.acos(localZ/this.radius3D);
 
+    int firstShellIndex;
     if (this.isFront) {
-      this.heartShell = this.ledIndex + firstShellFront[this.stripIndex];
+      firstShellIndex = firstShellFront[this.stripIndex];
     } else {
-      this.heartShell = this.ledIndex + firstShellBack[this.stripIndex];
+      firstShellIndex = firstShellBack[this.stripIndex];
     }
+    this.heartShell = this.ledIndex + firstShellIndex;
+
+    int shellLength = stripLength + firstShellIndex;
+    this.normalizedHeartShell = 1.0f * heartShell / shellLength;
   }
 
 }
