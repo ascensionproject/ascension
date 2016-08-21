@@ -16,6 +16,9 @@ LXPattern[] patterns(P3LX lx) {
     new PulsePattern(lx),
     new HeartRadiusTestPattern(lx),
     new ModelTestPattern(lx),
+    new AmirRandomPlay(lx),
+    new AmirRegisterPlay(lx),
+    new AmirSphere(lx)
   };
 }
 
