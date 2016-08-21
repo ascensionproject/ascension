@@ -40,16 +40,16 @@ class Engine {
     lx = createLX(model);
 
     // Show render loop time
-    // lx.engine.addLoopTask(new LXLoopTask() {
-    //   int counter = 0;
-    //   public void loop(double deltaMs) {
-    //     LXPattern pattern = lx.engine.getDefaultChannel().getActivePattern();
-    //     float runtime = pattern.timer.runNanos / 1000000.0f;
-    //     counter = (counter+1) % 10;
-    //     if (counter != 0) return;
-    //     System.out.println(runtime);
-    //   }
-    // });
+    lx.engine.addLoopTask(new LXLoopTask() {
+      int counter = 0;
+      public void loop(double deltaMs) {
+        LXPattern pattern = lx.engine.getDefaultChannel().getActivePattern();
+        float runtime = pattern.timer.runNanos / 1000000.0f;
+        counter = (counter+1) % 10;
+        if (counter != 0) return;
+        System.out.println(runtime);
+      }
+    });
 
     lx.setPatterns(patterns(lx));
     lx.engine.getDefaultChannel().setFaderTransition(new AddTransition(lx));
