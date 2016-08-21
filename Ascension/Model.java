@@ -205,6 +205,7 @@ class LED extends LXPoint {
   final boolean isLeft;
   final int stripIndex;
   final int ledIndex;
+  final int stripLength;
 
   final int ppLedIndex;
   final int ppStripIndex;
@@ -223,11 +224,13 @@ class LED extends LXPoint {
         this.ppGroup = -1;
         this.ppLedIndex = -1;
         this.ppStripIndex = -1;
+        this.stripLength = 1;
       } else {
         this.ppStripIndex = stripData.getInt("ppStrip");
         this.ppGroup = stripData.getInt("ppGroup");
+        this.stripLength = stripData.getInt("stripLength");
         if (stripData.getInt("reverse") == 1) {
-          this.ppLedIndex = (stripData.getInt("stripLength") - this.ledIndex)
+          this.ppLedIndex = (stripLength - this.ledIndex)
                             + stripData.getInt("indexOffset");
         } else {
           this.ppLedIndex = this.ledIndex + stripData.getInt("indexOffset");
@@ -238,6 +241,7 @@ class LED extends LXPoint {
       this.ppGroup = -1;
       this.ppLedIndex = -1;
       this.ppStripIndex = -1;
+      this.stripLength = 1;
     }
   }
 
