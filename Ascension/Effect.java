@@ -1,3 +1,5 @@
+import java.util.List;
+
 import processing.core.PApplet;
 import processing.core.PConstants;
 
@@ -8,9 +10,21 @@ abstract class Effect extends LXEffect {
 
   protected final Model model;
 
+  protected final List<LED> leds;
+
+  protected final Heart heart;
+  protected final Leaves leaves;
+  protected final Trunks trunks;
+  protected final Roots roots;
+
   public Effect(LX lx) {
     super(lx);
     this.model = (Model)super.model;
+    this.leds = model.leds;
+    this.heart = model.heart;
+    this.leaves = model.leaves;
+    this.trunks = model.trunks;
+    this.roots = model.roots;
   }
 
   public void setLEDColor(LED led, int c) {
