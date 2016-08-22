@@ -36,6 +36,13 @@ class Engine {
     };
   }
 
+  LXEffect[] effects(LX lx) {
+    return new LXEffect[] {
+      // new CandyTextureEffect(lx),
+      // new NoiseEffect(lx),
+    };
+  }
+
   Model model;
   LX lx;
   DeviceRegistry ppRegistry;
@@ -60,6 +67,9 @@ class Engine {
 
     lx.setPatterns(patterns(lx));
     lx.engine.getDefaultChannel().setFaderTransition(new AddTransition(lx));
+    for (LXEffect effect : effects(lx)) {
+      lx.engine.addEffect(effect);
+    }
 
     setupOutput();
 
