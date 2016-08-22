@@ -1,4 +1,5 @@
 import processing.core.PApplet;
+import processing.core.PConstants;
 
 import heronarts.lx.LX;
 import heronarts.lx.pattern.LXPattern;
@@ -19,11 +20,214 @@ abstract class Pattern extends LXPattern {
   // Processing functions
   // (duplicated here for easy access)
 
-  public static final float PI = Utils.PI;
-  public static final float HALF_PI = Utils.HALF_PI;
-  public static final float THIRD_PI = Utils.THIRD_PI;
-  public static final float QUARTER_PI = Utils.QUARTER_PI;
-  public static final float TWO_PI = Utils.TWO_PI;
+  public static final float EPSILON = PConstants.EPSILON;
+  public static final float MAX_FLOAT = PConstants.MAX_FLOAT;
+  public static final float MIN_FLOAT = PConstants.MIN_FLOAT;
+  public static final int MAX_INT = PConstants.MAX_INT;
+  public static final int MIN_INT = PConstants.MIN_INT;
+
+  // shapes
+  public static final int VERTEX = PConstants.VERTEX;
+  public static final int BEZIER_VERTEX = PConstants.BEZIER_VERTEX;
+  public static final int QUADRATIC_VERTEX = PConstants.QUADRATIC_VERTEX;
+  public static final int CURVE_VERTEX = PConstants.CURVE_VERTEX;
+  public static final int BREAK = PConstants.BREAK;
+
+  // useful goodness
+  public static final float PI = PConstants.PI;
+  public static final float HALF_PI = PConstants.HALF_PI;
+  public static final float THIRD_PI = PConstants.THIRD_PI;
+  public static final float QUARTER_PI = PConstants.QUARTER_PI;
+  public static final float TWO_PI = PConstants.TWO_PI;
+  public static final float TAU = PConstants.TAU;
+
+  public static final float DEG_TO_RAD = PConstants.DEG_TO_RAD;
+  public static final float RAD_TO_DEG = PConstants.RAD_TO_DEG;
+
+  public static final String WHITESPACE = PConstants.WHITESPACE;
+
+  // for colors and/or images
+  public static final int RGB   = PConstants.RGB;
+  public static final int ARGB  = PConstants.ARGB;
+  public static final int HSB   = PConstants.HSB;
+  public static final int ALPHA = PConstants.ALPHA;
+
+  // image file types
+  public static final int TIFF  = PConstants.TIFF;
+  public static final int TARGA = PConstants.TARGA;
+  public static final int JPEG  = PConstants.JPEG;
+  public static final int GIF   = PConstants.GIF;
+
+  // filter/convert types
+  public static final int BLUR      = PConstants.BLUR;
+  public static final int GRAY      = PConstants.GRAY;
+  public static final int INVERT    = PConstants.INVERT;
+  public static final int OPAQUE    = PConstants.OPAQUE;
+  public static final int POSTERIZE = PConstants.POSTERIZE;
+  public static final int THRESHOLD = PConstants.THRESHOLD;
+  public static final int ERODE     = PConstants.ERODE;
+  public static final int DILATE    = PConstants.DILATE;
+
+  // blend mode keyword definitions
+  public static final int REPLACE    = PConstants.REPLACE;
+  public static final int BLEND      = PConstants.BLEND;
+  public static final int ADD        = PConstants.ADD;
+  public static final int SUBTRACT   = PConstants.SUBTRACT;
+  public static final int LIGHTEST   = PConstants.LIGHTEST;
+  public static final int DARKEST    = PConstants.DARKEST;
+  public static final int DIFFERENCE = PConstants.DIFFERENCE;
+  public static final int EXCLUSION  = PConstants.EXCLUSION;
+  public static final int MULTIPLY   = PConstants.MULTIPLY;
+  public static final int SCREEN     = PConstants.SCREEN;
+  public static final int OVERLAY    = PConstants.OVERLAY;
+  public static final int HARD_LIGHT = PConstants.HARD_LIGHT;
+  public static final int SOFT_LIGHT = PConstants.SOFT_LIGHT;
+  public static final int DODGE      = PConstants.DODGE;
+  public static final int BURN       = PConstants.BURN;
+
+  // for messages
+  public static final int CHATTER   = PConstants.CHATTER;
+  public static final int COMPLAINT = PConstants.COMPLAINT;
+  public static final int PROBLEM   = PConstants.PROBLEM;
+
+  // types of transformation matrices
+  public static final int PROJECTION = PConstants.PROJECTION;
+  public static final int MODELVIEW  = PConstants.MODELVIEW;
+
+  // types of projection matrices
+  public static final int CUSTOM       = PConstants.CUSTOM;
+  public static final int ORTHOGRAPHIC = PConstants.ORTHOGRAPHIC;
+  public static final int PERSPECTIVE  = PConstants.PERSPECTIVE;
+
+  // shapes
+  public static final int GROUP           = PConstants.GROUP;
+
+  public static final int POINT           = PConstants.POINT;
+  public static final int POINTS          = PConstants.POINTS;
+
+  public static final int LINE            = PConstants.LINE;
+  public static final int LINES           = PConstants.LINES;
+  public static final int LINE_STRIP      = PConstants.LINE_STRIP;
+  public static final int LINE_LOOP       = PConstants.LINE_LOOP;
+
+  public static final int TRIANGLE        = PConstants.TRIANGLE;
+  public static final int TRIANGLES       = PConstants.TRIANGLES;
+  public static final int TRIANGLE_STRIP  = PConstants.TRIANGLE_STRIP;
+  public static final int TRIANGLE_FAN    = PConstants.TRIANGLE_FAN;
+
+  public static final int QUAD            = PConstants.QUAD;
+  public static final int QUADS           = PConstants.QUADS;
+  public static final int QUAD_STRIP      = PConstants.QUAD_STRIP;
+
+  public static final int POLYGON         = PConstants.POLYGON;
+  public static final int PATH            = PConstants.PATH;
+
+  public static final int RECT            = PConstants.RECT;
+  public static final int ELLIPSE         = PConstants.ELLIPSE;
+  public static final int ARC             = PConstants.ARC;
+
+  public static final int SPHERE          = PConstants.SPHERE;
+  public static final int BOX             = PConstants.BOX;
+
+  // shape closing modes
+  public static final int OPEN = PConstants.OPEN;
+  public static final int CLOSE = PConstants.CLOSE;
+
+  // shape drawing modes
+  public static final int CORNER   = PConstants.CORNER;
+  public static final int CORNERS  = PConstants.CORNERS;
+  public static final int RADIUS   = PConstants.RADIUS;
+  public static final int CENTER   = PConstants.CENTER;
+  public static final int DIAMETER = PConstants.DIAMETER;
+
+  // arc drawing modes
+  public static final int CHORD  = PConstants.CHORD;
+  public static final int PIE    = PConstants.PIE;
+
+  // vertically alignment modes for text
+  public static final int BASELINE = PConstants.BASELINE;
+  public static final int TOP = PConstants.TOP;
+  public static final int BOTTOM = PConstants.BOTTOM;
+
+  // uv texture orientation modes
+  public static final int NORMAL     = PConstants.NORMAL;
+  public static final int IMAGE      = PConstants.IMAGE;
+
+  // texture wrapping modes
+  public static final int CLAMP = PConstants.CLAMP;
+  public static final int REPEAT = PConstants.REPEAT;
+
+  // text placement modes
+  public static final int MODEL = PConstants.MODEL;
+  public static final int SHAPE = PConstants.SHAPE;
+
+  // stroke modes
+  public static final int SQUARE   = PConstants.SQUARE;
+  public static final int ROUND    = PConstants.ROUND;
+  public static final int PROJECT  = PConstants.PROJECT;
+  public static final int MITER    = PConstants.MITER;
+  public static final int BEVEL    = PConstants.BEVEL;
+
+  // lighting
+  public static final int AMBIENT = PConstants.AMBIENT;
+  public static final int DIRECTIONAL  = PConstants.DIRECTIONAL;
+  public static final int SPOT = PConstants.SPOT;
+
+  // key constants
+  public static final char BACKSPACE = PConstants.BACKSPACE;
+  public static final char TAB       = PConstants.TAB;
+  public static final char ENTER     = PConstants.ENTER;
+  public static final char RETURN    = PConstants.RETURN;
+  public static final char ESC       = PConstants.ESC;
+  public static final char DELETE    = PConstants.DELETE;
+  public static final int CODED     = PConstants.CODED;
+
+  public static final int UP        = PConstants.UP;
+  public static final int DOWN      = PConstants.DOWN;
+  public static final int LEFT      = PConstants.LEFT;
+  public static final int RIGHT     = PConstants.RIGHT;
+
+  public static final int ALT       = PConstants.ALT;
+  public static final int CONTROL   = PConstants.CONTROL;
+  public static final int SHIFT     = PConstants.SHIFT;
+
+  // orientations (only used on Android, ignored on desktop)
+  public static final int PORTRAIT = PConstants.PORTRAIT;
+  public static final int LANDSCAPE = PConstants.LANDSCAPE;
+  public static final int SPAN = PConstants.SPAN;
+
+  // cursor types
+  public static final int ARROW = PConstants.ARROW;
+  public static final int CROSS = PConstants.CROSS;
+  public static final int HAND  = PConstants.HAND;
+  public static final int MOVE  = PConstants.MOVE;
+  public static final int TEXT  = PConstants.TEXT;
+  public static final int WAIT  = PConstants.WAIT;
+
+  // hints
+  public static final int DISABLE_DEPTH_TEST         = PConstants.DISABLE_DEPTH_TEST;
+  public static final int ENABLE_DEPTH_TEST          = PConstants.ENABLE_DEPTH_TEST;
+  public static final int ENABLE_DEPTH_SORT          = PConstants.ENABLE_DEPTH_SORT;
+  public static final int DISABLE_DEPTH_SORT         = PConstants.DISABLE_DEPTH_SORT;
+  public static final int DISABLE_OPENGL_ERRORS      = PConstants.DISABLE_OPENGL_ERRORS;
+  public static final int ENABLE_OPENGL_ERRORS       = PConstants.ENABLE_OPENGL_ERRORS;
+  public static final int DISABLE_DEPTH_MASK         = PConstants.DISABLE_DEPTH_MASK;
+  public static final int ENABLE_DEPTH_MASK          = PConstants.ENABLE_DEPTH_MASK;
+  public static final int DISABLE_OPTIMIZED_STROKE   = PConstants.DISABLE_OPTIMIZED_STROKE;
+  public static final int ENABLE_OPTIMIZED_STROKE    = PConstants.ENABLE_OPTIMIZED_STROKE;
+  public static final int ENABLE_STROKE_PERSPECTIVE  = PConstants.ENABLE_STROKE_PERSPECTIVE;
+  public static final int DISABLE_STROKE_PERSPECTIVE = PConstants.DISABLE_STROKE_PERSPECTIVE;
+  public static final int DISABLE_TEXTURE_MIPMAPS    = PConstants.DISABLE_TEXTURE_MIPMAPS;
+  public static final int ENABLE_TEXTURE_MIPMAPS     = PConstants.ENABLE_TEXTURE_MIPMAPS;
+  public static final int ENABLE_STROKE_PURE         = PConstants.ENABLE_STROKE_PURE;
+  public static final int DISABLE_STROKE_PURE        = PConstants.DISABLE_STROKE_PURE;
+  public static final int ENABLE_BUFFER_READING      = PConstants.ENABLE_BUFFER_READING;
+  public static final int DISABLE_BUFFER_READING     = PConstants.DISABLE_BUFFER_READING;
+  public static final int DISABLE_KEY_REPEAT         = PConstants.DISABLE_KEY_REPEAT;
+  public static final int ENABLE_KEY_REPEAT          = PConstants.ENABLE_KEY_REPEAT;
+  public static final int DISABLE_ASYNC_SAVEFRAME    = PConstants.DISABLE_ASYNC_SAVEFRAME;
+  public static final int ENABLE_ASYNC_SAVEFRAME     = PConstants.ENABLE_ASYNC_SAVEFRAME;
+  public static final int HINT_COUNT                 = PConstants.HINT_COUNT;
 
   //////////////////////////////////////////////////////////////
   // getting the time
@@ -104,6 +308,23 @@ abstract class Pattern extends LXPattern {
   static public final float map(float value,
                                 float start1, float stop1,
                                 float start2, float stop2) { return PApplet.map(value, start1, stop1, start2, stop2); }
+
+
+  //////////////////////////////////////////////////////////////
+  // RANDOM NUMBERS
+  public final float random(float high) { return Utils.random(high); }
+  public final float randomGaussian() { return Utils.randomGaussian(); }
+  public final float random(float low, float high) { return Utils.random(low, high); }
+  public final void randomSeed(long seed) { Utils.randomSeed(seed); }
+
+  //////////////////////////////////////////////////////////////
+  // PERLIN NOISE
+  public final float noise(float x) { return Utils.noise(x); }
+  public final float noise(float x, float y) { return Utils.noise(x, y); }
+  public final float noise(float x, float y, float z) { return Utils.noise(x, y, z); }
+  public final void noiseDetail(int lod) { Utils.noiseDetail(lod); }
+  public final void noiseDetail(int lod, float falloff) { Utils.noiseDetail(lod, falloff); }
+  public final void noiseSeed(long seed) { Utils.noiseSeed(seed); }
 
   //////////////////////////////////////////////////////////////
   // SORT

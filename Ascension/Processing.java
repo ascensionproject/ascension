@@ -8,12 +8,6 @@ import processing.data.*;
 
 final class Utils {
 
-  static final float PI = (float) Math.PI;
-  static final float HALF_PI = (float) (Math.PI / 2.0);
-  static final float THIRD_PI = (float) (Math.PI / 3.0);
-  static final float QUARTER_PI = (float) (Math.PI / 4.0);
-  static final float TWO_PI = (float) (2.0 * Math.PI);
-
   static private final long millisOffset = System.currentTimeMillis();
 
   static String sketchPath;
@@ -288,6 +282,186 @@ final class Utils {
     return workingDirItem;
 //    }
 //    // In some cases, the current working directory won't be set properly.
+  }
+
+
+  //////////////////////////////////////////////////////////////
+  // RANDOM NUMBERS
+
+  static Random internalRandom;
+
+  public static final float random(float high) {
+    // avoid an infinite loop when 0 or NaN are passed in
+    if (high == 0 || high != high) {
+      return 0;
+    }
+
+    if (internalRandom == null) {
+      internalRandom = new Random();
+    }
+
+    // for some reason (rounding error?) Math.random() * 3
+    // can sometimes return '3' (once in ~30 million tries)
+    // so a check was added to avoid the inclusion of 'howbig'
+    float value = 0;
+    do {
+      value = internalRandom.nextFloat() * high;
+    } while (value == high);
+    return value;
+  }
+
+  public static final float randomGaussian() {
+    if (internalRandom == null) {
+      internalRandom = new Random();
+    }
+    return (float) internalRandom.nextGaussian();
+  }
+
+  public static final float random(float low, float high) {
+    if (low >= high) return low;
+    float diff = high - low;
+    float value = 0;
+    // because of rounding error, can't just add low, otherwise it may hit high
+    // https://github.com/processing/processing/issues/4551
+    do {
+      value = random(diff) + low;
+    } while (value == high);
+    return value;
+  }
+
+  public static final void randomSeed(long seed) {
+    if (internalRandom == null) {
+      internalRandom = new Random();
+    }
+    internalRandom.setSeed(seed);
+  }
+
+  static final protected float sinLUT[];
+  static final protected float cosLUT[];
+  static final protected float SINCOS_PRECISION = 0.5f;
+  static final protected int SINCOS_LENGTH = (int) (360f / SINCOS_PRECISION);
+  static {
+    sinLUT = new float[SINCOS_LENGTH];
+    cosLUT = new float[SINCOS_LENGTH];
+    for (int i = 0; i < SINCOS_LENGTH; i++) {
+      sinLUT[i] = (float) Math.sin(i * PConstants.DEG_TO_RAD * SINCOS_PRECISION);
+      cosLUT[i] = (float) Math.cos(i * PConstants.DEG_TO_RAD * SINCOS_PRECISION);
+    }
+  }
+
+  //////////////////////////////////////////////////////////////
+  // PERLIN NOISE
+  static final int PERLIN_YWRAPB = 4;
+  static final int PERLIN_YWRAP = 1<<PERLIN_YWRAPB;
+  static final int PERLIN_ZWRAPB = 8;
+  static final int PERLIN_ZWRAP = 1<<PERLIN_ZWRAPB;
+  static final int PERLIN_SIZE = 4095;
+
+  static int perlin_octaves = 4; // default to medium smooth
+  static float perlin_amp_falloff = 0.5f; // 50% reduction/octave
+
+  // [toxi 031112]
+  // new vars needed due to recent change of cos table in PGraphics
+  static int perlin_TWOPI, perlin_PI;
+  static float[] perlin_cosTable;
+  static float[] perlin;
+
+  static Random perlinRandom;
+
+  public static float noise(float x) {
+    // is this legit? it's a dumb way to do it (but repair it later)
+    return noise(x, 0f, 0f);
+  }
+
+  public static float noise(float x, float y) {
+    return noise(x, y, 0f);
+  }
+
+  public static float noise(float x, float y, float z) {
+    if (perlin == null) {
+      if (perlinRandom == null) {
+        perlinRandom = new Random();
+      }
+      perlin = new float[PERLIN_SIZE + 1];
+      for (int i = 0; i < PERLIN_SIZE + 1; i++) {
+        perlin[i] = perlinRandom.nextFloat(); //(float)Math.random();
+      }
+      // [toxi 031112]
+      // noise broke due to recent change of cos table in PGraphics
+      // this will take care of it
+      perlin_cosTable = cosLUT;
+      perlin_TWOPI = perlin_PI = SINCOS_LENGTH;
+      perlin_PI >>= 1;
+    }
+
+    if (x<0) x=-x;
+    if (y<0) y=-y;
+    if (z<0) z=-z;
+
+    int xi=(int)x, yi=(int)y, zi=(int)z;
+    float xf = x - xi;
+    float yf = y - yi;
+    float zf = z - zi;
+    float rxf, ryf;
+
+    float r=0;
+    float ampl=0.5f;
+
+    float n1,n2,n3;
+
+    for (int i=0; i<perlin_octaves; i++) {
+      int of=xi+(yi<<PERLIN_YWRAPB)+(zi<<PERLIN_ZWRAPB);
+
+      rxf=noise_fsc(xf);
+      ryf=noise_fsc(yf);
+
+      n1  = perlin[of&PERLIN_SIZE];
+      n1 += rxf*(perlin[(of+1)&PERLIN_SIZE]-n1);
+      n2  = perlin[(of+PERLIN_YWRAP)&PERLIN_SIZE];
+      n2 += rxf*(perlin[(of+PERLIN_YWRAP+1)&PERLIN_SIZE]-n2);
+      n1 += ryf*(n2-n1);
+
+      of += PERLIN_ZWRAP;
+      n2  = perlin[of&PERLIN_SIZE];
+      n2 += rxf*(perlin[(of+1)&PERLIN_SIZE]-n2);
+      n3  = perlin[(of+PERLIN_YWRAP)&PERLIN_SIZE];
+      n3 += rxf*(perlin[(of+PERLIN_YWRAP+1)&PERLIN_SIZE]-n3);
+      n2 += ryf*(n3-n2);
+
+      n1 += noise_fsc(zf)*(n2-n1);
+
+      r += n1*ampl;
+      ampl *= perlin_amp_falloff;
+      xi<<=1; xf*=2;
+      yi<<=1; yf*=2;
+      zi<<=1; zf*=2;
+
+      if (xf>=1.0f) { xi++; xf--; }
+      if (yf>=1.0f) { yi++; yf--; }
+      if (zf>=1.0f) { zi++; zf--; }
+    }
+    return r;
+  }
+
+  private static float noise_fsc(float i) {
+    // using bagel's cosine table instead
+    return 0.5f*(1.0f-perlin_cosTable[(int)(i*perlin_PI)%perlin_TWOPI]);
+  }
+
+  public static void noiseDetail(int lod) {
+    if (lod>0) perlin_octaves=lod;
+  }
+
+  public static void noiseDetail(int lod, float falloff) {
+    if (lod>0) perlin_octaves=lod;
+    if (falloff>0) perlin_amp_falloff=falloff;
+  }
+
+  public static void noiseSeed(long seed) {
+    if (perlinRandom == null) perlinRandom = new Random();
+    perlinRandom.setSeed(seed);
+    // force table reset after changing the random number seed [0122]
+    perlin = null;
   }
 
 }
