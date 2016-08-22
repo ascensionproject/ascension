@@ -292,7 +292,7 @@ class PlantHeartWavePattern extends Pattern {
 //  Accelerator time = new Accelerator(0, 1, 0);
 
 
-//  SpottedHeartPattern(P3LX lx) {
+//  SpottedHeartPattern(LX lx) {
 //    super(lx);
 //    addModulator(time).start();
 //  }
