@@ -187,7 +187,7 @@ class HeartRadiusTestPattern extends Pattern {
 
 class HeartShellTestPattern extends Pattern {
 
-  static final int INITIAL_STRIP = 19;
+  static final int INITIAL_STRIP = 55;
 
   Click increment = new Click(700);
   DiscreteParameter curShell = new DiscreteParameter("shell", -1, 56);

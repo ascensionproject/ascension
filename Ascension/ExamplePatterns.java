@@ -16,7 +16,7 @@ class SolidColorExamplePattern extends Pattern {
   public void run(double deltaMs) {
     
     // set everything to teal
-    int c = lx.hsb(200, 0, 100);
+    int c = lx.hsb(0, 100, 100);
     for (LED led : model.leds) {
       setLEDColor(led, c);
     }
