@@ -4,11 +4,16 @@ import com.heroicrobot.dropbit.registry.*;
 import com.heroicrobot.dropbit.devices.pixelpusher.Strip;
 
 import heronarts.lx.*;
+import heronarts.lx.effect.*;
 import heronarts.lx.model.*;
+import heronarts.lx.modulator.*;
 import heronarts.lx.pattern.*;
+import heronarts.lx.parameter.*;
 import heronarts.lx.transition.AddTransition;
 
 import processing.data.*;
+
+import toxi.math.noise.SimplexNoise;
 
 class Engine {
 
@@ -125,4 +130,50 @@ class JavaLX extends LX {
   JavaLX(LXModel model) {
     super(model);
   }
+}
+
+// Outputs from -1 to 1
+class NoiseModulator extends LXModulator {
+
+  final LXParameter outputScale;
+  final LXParameter xScale;
+
+  private double x = 0;
+  private SimplexNoise noise = new SimplexNoise();
+
+  NoiseModulator() {
+    this(new FixedParameter(1), new FixedParameter(1));
+  }
+
+  NoiseModulator(double outputScale) {
+    this(new FixedParameter(outputScale), new FixedParameter(1));
+  }
+
+  NoiseModulator(LXParameter outputScale) {
+    this(outputScale, new FixedParameter(1));
+  }
+
+  NoiseModulator(double outputScale, LXParameter xScale) {
+    this(new FixedParameter(outputScale), xScale);
+  }
+
+  NoiseModulator(LXParameter outputScale, double xScale) {
+    this(outputScale, new FixedParameter(xScale));
+  }
+
+  NoiseModulator(double outputScale, double xScale) {
+    this(new FixedParameter(outputScale), new FixedParameter(xScale));
+  }
+
+  NoiseModulator(LXParameter outputScale, LXParameter xScale) {
+    super("Noise");
+    this.outputScale = outputScale;
+    this.xScale = xScale;
+  }
+
+  protected double computeValue(double deltaMs) {
+    x += xScale.getValue() * deltaMs;
+    return outputScale.getValue() * noise.noise(x, 0);
+  }
+
 }
