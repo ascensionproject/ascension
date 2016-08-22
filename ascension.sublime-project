@@ -12,7 +12,8 @@
 				"build-tmp",
 				"javadoc",
 				"code",
-				"data"
+				"data",
+				"bin"
 			],
 			"path": "."
 		}

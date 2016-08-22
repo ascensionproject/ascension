@@ -8,3 +8,4 @@ application.macosx
 
 build-tmp/
 *.sublime-workspace
+/bin/
