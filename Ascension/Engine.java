@@ -20,6 +20,8 @@ class Engine {
   LXPattern[] patterns(LX lx) {
     return new LXPattern[] {
       new NormalizedHeartShellTestPattern(lx),
+      new NoisePattern(lx),
+      new NoiseFadePattern(lx),
       new HeartRadiusTestPattern(lx),
       new SolidColorExamplePattern(lx),
       new StaticPartsExamplePattern(lx),
