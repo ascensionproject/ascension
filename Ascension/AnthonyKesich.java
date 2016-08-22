@@ -41,7 +41,7 @@ class CandyCanesPattern extends Pattern {
 
   Accelerator time = new Accelerator(0, 1, 0);
 
-  CandyCanesPattern(P3LX lx) {
+  CandyCanesPattern(LX lx) {
     super(lx);
     addModulator(time).start();
   }
