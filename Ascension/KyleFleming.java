@@ -81,7 +81,7 @@ class BoilerplatePattern extends Pattern {
 
     int c = lx.hsb(modulatorName.getValuef(), 100, 80);
     // Iterate over all LEDs
-    for (LED led : model.leds) {
+    for (LED led : leds) {
       setLEDColor(led, c);
     }
   }
@@ -107,7 +107,7 @@ class ModelTestPattern extends Pattern {
     //}
 
     // Fade around base with saw wave
-    for (RootLED led : model.roots.leds) {
+    for (RootLED led : roots.leds) {
       c = lx.hsb(led.normalizedBasePath * 360 + rootFade.getValuef(), 100, 80);
       setLEDColor(led, c);
     }
@@ -130,7 +130,7 @@ class NormalizedHeartShellTestPattern extends Pattern {
     setColors(lx.hsb(globalFade.getValuef(), 100, 80));
 
     // Fade around base with saw wave
-    for (HeartLED led : model.heart.leds) {
+    for (HeartLED led : heart.leds) {
       colors[led.index] = lx.hsb(500*led.normalizedHeartShell + heartFade.getValuef(), 100, 80);
     }
   }
