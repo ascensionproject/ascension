@@ -129,7 +129,7 @@ Go read it now then come back here.
 ## Adding your own patterns
 1. Create a new file called `YourName`
 2. Create a new class that extends `Pattern`
-3. Add your pattern to the list of patterns at the top of `Ascension.pde`
+3. Add your pattern to the list of patterns at the top of `Engine.java`
   1. This will add it to the list of patterns accessible in the upper left of the UI
 4. Write pattern and make blinkies
 5. Bask in the knowledge that you're an artist and your art will be displayed for all to see on the Playa
@@ -146,6 +146,8 @@ Go read it now then come back here.
 - `isFront` -- True if front half of heart
 - `heartShell` -- Integer denoting sets of concentric heart shells
   - 0 is the center and 30 just lights up a handful of lights right at the edge of the heart.
+- `normalizedheartShell` -- Normalized version of heartShell
+  - 0 is the center of the heart and 1 is the other rim going all the way around
 - `radius2D` -- Distance in the x-y plane from the center of the heart
 - `radius3D` -- Total x-y-z distance from the center of the heart
 - `thetaZ` -- Angular distance in radians from 12 o'clock on the heart around the Z-axis
