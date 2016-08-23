@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 import processing.data.Table;
@@ -45,12 +46,21 @@ class Model extends LXModel {
 class Heart extends LXModel {
 
   final List<HeartLED> leds;
+  final List<HeartLED> frontLEDs = new ArrayList<HeartLED>();
+  final List<HeartLED> backLEDs = new ArrayList<HeartLED>();
 
   @SuppressWarnings("unchecked")
   Heart(Table ledData, Table ppStripData) {
     super(new Fixture(ledData, ppStripData));
     Fixture fixture = (Fixture)fixtures.get(0);
     leds = (List)fixture.getPoints();
+    for (HeartLED led : leds) {
+      if (led.isFront) {
+        frontLEDs.add(led);
+      } else {
+        backLEDs.add(led);
+      }
+    }
   }
 
   static class Fixture extends LXAbstractFixture {

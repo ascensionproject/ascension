@@ -4,17 +4,24 @@ import com.heroicrobot.dropbit.registry.*;
 import com.heroicrobot.dropbit.devices.pixelpusher.Strip;
 
 import heronarts.lx.*;
+import heronarts.lx.effect.*;
 import heronarts.lx.model.*;
+import heronarts.lx.modulator.*;
 import heronarts.lx.pattern.*;
+import heronarts.lx.parameter.*;
 import heronarts.lx.transition.AddTransition;
 
 import processing.data.*;
+
+import toxi.math.noise.SimplexNoise;
 
 class Engine {
 
   LXPattern[] patterns(LX lx) {
     return new LXPattern[] {
       new NormalizedHeartShellTestPattern(lx),
+      new NoisePattern(lx),
+      new NoiseFadePattern(lx),
       new HeartRadiusTestPattern(lx),
       new SolidColorExamplePattern(lx),
       new StaticPartsExamplePattern(lx),
@@ -33,6 +40,13 @@ class Engine {
     };
   }
 
+  LXEffect[] effects(LX lx) {
+    return new LXEffect[] {
+      // new CandyTextureEffect(lx),
+      // new NoiseEffect(lx),
+    };
+  }
+
   Model model;
   LX lx;
   DeviceRegistry ppRegistry;
@@ -43,20 +57,23 @@ class Engine {
     model = loadModel();
     lx = createLX(model);
 
-    // Show render loop time
-    lx.engine.addLoopTask(new LXLoopTask() {
-      int counter = 0;
-      public void loop(double deltaMs) {
-        LXPattern pattern = lx.engine.getDefaultChannel().getActivePattern();
-        float runtime = pattern.timer.runNanos / 1000000.0f;
-        counter = (counter+1) % 10;
-        if (counter != 0) return;
-        System.out.println(runtime);
-      }
-    });
+    // // Show render loop time
+    // lx.engine.addLoopTask(new LXLoopTask() {
+    //   int counter = 0;
+    //   public void loop(double deltaMs) {
+    //     LXPattern pattern = lx.engine.getDefaultChannel().getActivePattern();
+    //     float runtime = pattern.timer.runNanos / 1000000.0f;
+    //     counter = (counter+1) % 10;
+    //     if (counter != 0) return;
+    //     System.out.println(runtime);
+    //   }
+    // });
 
     lx.setPatterns(patterns(lx));
     lx.engine.getDefaultChannel().setFaderTransition(new AddTransition(lx));
+    for (LXEffect effect : effects(lx)) {
+      lx.engine.addEffect(effect);
+    }
 
     setupOutput();
 
@@ -129,4 +146,50 @@ class JavaLX extends LX {
   JavaLX(LXModel model) {
     super(model);
   }
+}
+
+// Outputs from -1 to 1
+class NoiseModulator extends LXModulator {
+
+  final LXParameter outputScale;
+  final LXParameter xScale;
+
+  private double x = 0;
+  private SimplexNoise noise = new SimplexNoise();
+
+  NoiseModulator() {
+    this(new FixedParameter(1), new FixedParameter(1));
+  }
+
+  NoiseModulator(double outputScale) {
+    this(new FixedParameter(outputScale), new FixedParameter(1));
+  }
+
+  NoiseModulator(LXParameter outputScale) {
+    this(outputScale, new FixedParameter(1));
+  }
+
+  NoiseModulator(double outputScale, LXParameter xScale) {
+    this(new FixedParameter(outputScale), xScale);
+  }
+
+  NoiseModulator(LXParameter outputScale, double xScale) {
+    this(outputScale, new FixedParameter(xScale));
+  }
+
+  NoiseModulator(double outputScale, double xScale) {
+    this(new FixedParameter(outputScale), new FixedParameter(xScale));
+  }
+
+  NoiseModulator(LXParameter outputScale, LXParameter xScale) {
+    super("Noise");
+    this.outputScale = outputScale;
+    this.xScale = xScale;
+  }
+
+  protected double computeValue(double deltaMs) {
+    x += xScale.getValue() * deltaMs;
+    return outputScale.getValue() * noise.noise(x, 0);
+  }
+
 }
