@@ -9,13 +9,13 @@ import heronarts.lx.parameter.*;
 import heronarts.lx.model.LXPoint;
 import heronarts.p3lx.*;
 import java.util.List;
-
 import ddf.minim.*;
 import ddf.minim.analysis.*;
 import ddf.minim.effects.*;
 import ddf.minim.signals.*;
 import ddf.minim.spi.*;
 import ddf.minim.ugens.*;
+
 
 class AmirSphere extends Pattern {
   
