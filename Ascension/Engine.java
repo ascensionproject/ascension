@@ -26,6 +26,10 @@ class Engine {
       new PulsePattern(lx),
       new HeartShellTestPattern(lx),
       new ModelTestPattern(lx),
+      new AmirSphere(lx),
+      new AmirRandomPlay(lx),
+      new AmirRegisterPlay(lx),
+      new SoundHistogram(lx)
     };
   }
 
