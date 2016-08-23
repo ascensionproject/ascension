@@ -4,24 +4,17 @@ import com.heroicrobot.dropbit.registry.*;
 import com.heroicrobot.dropbit.devices.pixelpusher.Strip;
 
 import heronarts.lx.*;
-import heronarts.lx.effect.*;
 import heronarts.lx.model.*;
-import heronarts.lx.modulator.*;
 import heronarts.lx.pattern.*;
-import heronarts.lx.parameter.*;
 import heronarts.lx.transition.AddTransition;
 
 import processing.data.*;
-
-import toxi.math.noise.SimplexNoise;
 
 class Engine {
 
   LXPattern[] patterns(LX lx) {
     return new LXPattern[] {
       new NormalizedHeartShellTestPattern(lx),
-      new NoisePattern(lx),
-      new NoiseFadePattern(lx),
       new HeartRadiusTestPattern(lx),
       new SolidColorExamplePattern(lx),
       new StaticPartsExamplePattern(lx),
@@ -40,13 +33,6 @@ class Engine {
     };
   }
 
-  LXEffect[] effects(LX lx) {
-    return new LXEffect[] {
-      // new CandyTextureEffect(lx),
-      // new NoiseEffect(lx),
-    };
-  }
-
   Model model;
   LX lx;
   DeviceRegistry ppRegistry;
@@ -57,23 +43,20 @@ class Engine {
     model = loadModel();
     lx = createLX(model);
 
-    // // Show render loop time
-    // lx.engine.addLoopTask(new LXLoopTask() {
-    //   int counter = 0;
-    //   public void loop(double deltaMs) {
-    //     LXPattern pattern = lx.engine.getDefaultChannel().getActivePattern();
-    //     float runtime = pattern.timer.runNanos / 1000000.0f;
-    //     counter = (counter+1) % 10;
-    //     if (counter != 0) return;
-    //     System.out.println(runtime);
-    //   }
-    // });
+    // Show render loop time
+    lx.engine.addLoopTask(new LXLoopTask() {
+      int counter = 0;
+      public void loop(double deltaMs) {
+        LXPattern pattern = lx.engine.getDefaultChannel().getActivePattern();
+        float runtime = pattern.timer.runNanos / 1000000.0f;
+        counter = (counter+1) % 10;
+        if (counter != 0) return;
+        System.out.println(runtime);
+      }
+    });
 
     lx.setPatterns(patterns(lx));
     lx.engine.getDefaultChannel().setFaderTransition(new AddTransition(lx));
-    for (LXEffect effect : effects(lx)) {
-      lx.engine.addEffect(effect);
-    }
 
     setupOutput();
 
@@ -191,5 +174,4 @@ class NoiseModulator extends LXModulator {
     x += xScale.getValue() * deltaMs;
     return outputScale.getValue() * noise.noise(x, 0);
   }
-
 }
