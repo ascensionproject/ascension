@@ -16,8 +16,8 @@ class SolidColorExamplePattern extends Pattern {
   public void run(double deltaMs) {
     
     // set everything to teal
-    int c = lx.hsb(200, 0, 100);
-    for (LED led : model.leds) {
+    int c = lx.hsb(0, 100, 100);
+    for (LED led : leds) {
       setLEDColor(led, c);
     }
   }
@@ -37,12 +37,12 @@ class StaticPartsExamplePattern extends Pattern {
     
     // make roots dark-green
     int rootC = lx.hsb(144, 70, 30);
-    for (RootLED led : model.roots.leds) {
+    for (RootLED led : roots.leds) {
       setLEDColor(led, rootC);
     }
     
     // Turn the heart red
-    for (HeartLED led : model.heart.leds) {
+    for (HeartLED led : heart.leds) {
       
       // there are a little over 30 concentric "heart" shells on the heart
       int t = led.heartShell;
@@ -53,12 +53,12 @@ class StaticPartsExamplePattern extends Pattern {
 
     // make leaves lighter green
     int leafC = lx.hsb(100, 100, 80);
-    for (LeafLED led : model.leaves.leds) {
+    for (LeafLED led : leaves.leds) {
       setLEDColor(led, leafC);
     }
     
     // make trunk fade between the two greens
-    for (TrunkLED led : model.trunks.leds) {
+    for (TrunkLED led : trunks.leds) {
       
       // normalizedTrunkDistance is a float between 0 and 1
       // which gives us the distance along the trunk section
@@ -161,7 +161,7 @@ class BasicAnimationPattern extends Pattern {
 
     int c = lx.hsb(modulatorName.getValuef(), 100, 30);
     // Iterate over all LEDs
-    for (LED led : model.leds) {
+    for (LED led : leds) {
       setLEDColor(led, c);
     }
   }

@@ -3,6 +3,8 @@ import heronarts.lx.color.*;
 import heronarts.lx.modulator.*;
 import heronarts.lx.parameter.*;
 
+import toxi.math.noise.SimplexNoise;
+
 // Change this to the name of your pattern, e.g. FirePattern, LightsaberPattern
 class BoilerplatePattern extends Pattern {
 
@@ -81,7 +83,7 @@ class BoilerplatePattern extends Pattern {
 
     int c = lx.hsb(modulatorName.getValuef(), 100, 80);
     // Iterate over all LEDs
-    for (LED led : model.leds) {
+    for (LED led : leds) {
       setLEDColor(led, c);
     }
   }
@@ -107,7 +109,7 @@ class ModelTestPattern extends Pattern {
     //}
 
     // Fade around base with saw wave
-    for (RootLED led : model.roots.leds) {
+    for (RootLED led : roots.leds) {
       c = lx.hsb(led.normalizedBasePath * 360 + rootFade.getValuef(), 100, 80);
       setLEDColor(led, c);
     }
@@ -130,8 +132,96 @@ class NormalizedHeartShellTestPattern extends Pattern {
     setColors(lx.hsb(globalFade.getValuef(), 100, 80));
 
     // Fade around base with saw wave
-    for (HeartLED led : model.heart.leds) {
+    for (HeartLED led : heart.leds) {
       colors[led.index] = lx.hsb(500*led.normalizedHeartShell + heartFade.getValuef(), 100, 80);
+    }
+  }
+}
+
+class NoiseFadePattern extends Pattern {
+
+  final NoiseModulator noise = new NoiseModulator(360, 0.0001);
+
+  NoiseFadePattern(LX lx) {
+    super(lx);
+    addModulator(noise).start();
+  }
+
+  public void run(double deltaMs) {
+    setColors(lx.hsb(noise.getValuef(), 100, 80));
+  }
+
+}
+
+
+class NoisePattern extends Pattern {
+
+  private double timer;
+  private SimplexNoise noise = new SimplexNoise();
+
+  NoisePattern(LX lx) {
+    super(lx);
+  }
+
+  public void run(double deltaMs) {
+    timer += deltaMs;
+    for (LED led : leds) {
+      colors[led.index] = lx.hsb((float)noise.noise(led.x, led.y, led.z, timer), 100, 80);
+    }
+  }
+
+}
+
+class NoiseEffect extends Effect {
+
+  final NoiseModulator noise = new NoiseModulator(1, 0.001);
+
+  NoiseEffect(LX lx) {
+    super(lx);
+    addModulator(noise).start();
+  }
+
+  public void run(double deltaMs) {
+    float intensity = noise.getValuef() - 0.2f;
+
+    for (LED led : leds) {
+
+    }
+
+    setColors(0);
+    println(noise.getValuef());
+  }
+
+}
+
+class CandyTextureEffect extends Effect {
+
+  final NoiseModulator noise = new NoiseModulator(1, 0.0005);
+  final SinLFO broadOnOff = new SinLFO(-4, 4, 10000);
+
+  double time = 0;
+
+  CandyTextureEffect(LX lx) {
+    super(lx);
+    addModulator(noise).start();
+    addModulator(broadOnOff).start();
+  }
+
+  public void run(double deltaMs) {
+    time += deltaMs;
+
+    if (broadOnOff.getValue() < 0) return;
+
+    float intensity = min(2*(noise.getValuef() - 0.2f), 1) * min(broadOnOff.getValuef(), 1);
+    println("intensity: "+intensity);
+    if (intensity <= 0) return;
+
+    for (int i = 0; i < colors.length; i++) {
+      int oldColor = colors[i];
+      float newHue = i * 127 + 9342 + (float)time % 360;
+      int newColor = lx.hsb(newHue, 100, 100);
+      int blendedColor = LXColor.lerp(oldColor, newColor, intensity);
+      colors[i] = lx.hsb(LXColor.h(blendedColor), LXColor.s(blendedColor), LXColor.b(oldColor));
     }
   }
 }

@@ -4,9 +4,9 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 
 import heronarts.lx.LX;
-import heronarts.lx.pattern.LXPattern;
+import heronarts.lx.effect.LXEffect;
 
-abstract class Pattern extends LXPattern {
+abstract class Effect extends LXEffect {
 
   protected final Model model;
 
@@ -17,7 +17,7 @@ abstract class Pattern extends LXPattern {
   protected final Trunks trunks;
   protected final Roots roots;
 
-  public Pattern(LX lx) {
+  public Effect(LX lx) {
     super(lx);
     this.model = (Model)super.model;
     this.leds = model.leds;
