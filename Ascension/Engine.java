@@ -36,7 +36,7 @@ class Engine {
 	  new AmirSphere(lx),
       new AmirRandomPlay(lx),
       new AmirRegisterPlay(lx),
-      new SoundHistogram(lx).
+      new SoundHistogram(lx),
     
     };
   }
