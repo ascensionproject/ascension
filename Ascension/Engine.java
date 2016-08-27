@@ -37,7 +37,8 @@ class Engine {
       new AmirRandomPlay(lx),
       new AmirRegisterPlay(lx),
       new SoundHistogram(lx),
-    
+      new AmirUpDown(lx),
+      new AmirHeartBeat(lx),
     };
   }
 

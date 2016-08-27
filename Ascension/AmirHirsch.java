@@ -17,6 +17,88 @@ import ddf.minim.spi.*;
 import ddf.minim.ugens.*;
 
 
+class AmirUpDown extends Pattern {
+  
+    public DecibelMeter db = null;
+  BasicParameter hue = new BasicParameter("hue", 0,0,360);
+  BasicParameter sprd = new BasicParameter("sprd", 1,1,360);
+  BasicParameter rng = new BasicParameter("rng", 1,1,20);
+    BasicParameter hearthue = new BasicParameter("hearthue", 0,0,360);
+  BasicParameter heartsprd = new BasicParameter("heartsprd", 1,1,360);
+  BasicParameter heartrng = new BasicParameter("heartrng", 1,1,20);
+  BasicParameter gain = new BasicParameter("gain",1,0,100);
+     BasicParameter offsetx = new BasicParameter("x", 1, 1, 200); 
+  public AmirUpDown(LX lx)
+  {
+    super(lx);
+    db = new DecibelMeter(lx.audioInput());
+    db.range.setValue(48);
+    db.release.setValue(800);
+    addModulator(db).start();
+    addParameter(hue);
+    addParameter(sprd);
+    addParameter(rng);
+    addParameter(hearthue);
+    addParameter(heartsprd);
+    addParameter(heartrng);
+  addParameter (gain);
+  addParameter (offsetx);
+  }
+
+  public void run(double deltaMs)
+  {
+    int j=0;
+    double dbv = db.getDecibels()+48.0f;
+    //print (dbv);
+    //print ("\n");
+    float val;
+    for (LXPoint p : model.points)
+    {
+         val = p.y / offsetx.getValuef();
+      if (val < dbv)
+      {
+
+        colors[p.index] = LXColor.hsb(hue.getValuef()+(val % rng.getValuef())*sprd.getValuef(),100, 100);
+      }
+      else
+      {
+        colors[p.index] = 0;
+      }
+    }
+    for (LXPoint p : model.heart.points)
+    {
+       colors[p.index] = LXColor.hsb(hearthue.getValuef()+(dbv*2 % rng.getValuef())*sprd.getValuef(),2*dbv, 48+dbv);
+    }
+  }
+}
+
+
+class AmirHeartBeat extends AmirUpDown {
+  
+
+  SinLFO globalFade = new SinLFO(0, 360, 10000);
+  SawLFO heartFade = new SawLFO(360, 0, 2000);
+
+  public AmirHeartBeat(LX lx) {
+    super(lx);
+    addModulator(globalFade).start();
+    addModulator(heartFade).start();
+  }
+
+  public void run(double deltaMs) {
+    // Fade entire model with sin wave
+    setColors(lx.hsb(globalFade.getValuef(), 100, 80));
+  
+      int j=0;
+    double dbv = db.getDecibels()+48.0f;
+    for (HeartLED led : heart.leds) 
+      {
+         colors[led.index] = lx.hsb((float)((500*led.normalizedHeartShell-10*dbv) + heartFade.getValuef()), 
+         100.0f, (float) (dbv*2));
+      }
+  }
+}
+
 class AmirSphere extends Pattern {
   
   private BasicParameter brightParameter = new BasicParameter("bright", 50, 1, 100); 
