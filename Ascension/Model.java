@@ -247,6 +247,7 @@ class LED extends LXPoint {
         }
       }
     } else {
+      System.out.println("Not in csv: " + this.segmentId);
       // not in the csv yet
       this.ppGroup = -1;
       this.ppLedIndex = -1;
