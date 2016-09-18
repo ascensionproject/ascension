@@ -131,6 +131,11 @@ class NormalizedHeartShellTestPattern extends Pattern {
     // Fade entire model with sin wave
     setColors(lx.hsb(globalFade.getValuef(), 100, 80));
 
+    for (TrunkLED led : trunks.leds) {
+      if (led.isLeft) continue;
+      setLEDColor(led, lx.hsb(globalFade.getValuef() + 180, 100, 80));
+    }
+
     // Fade around base with saw wave
     for (HeartLED led : heart.leds) {
       colors[led.index] = lx.hsb(500*led.normalizedHeartShell + heartFade.getValuef(), 100, 80);
@@ -197,7 +202,7 @@ class NoiseEffect extends Effect {
 class CandyTextureEffect extends Effect {
 
   final NoiseModulator noise = new NoiseModulator(1, 0.0005);
-  final SinLFO broadOnOff = new SinLFO(-4, 4, 10000);
+  final SinLFO broadOnOff = new SinLFO(-4, 4, 20000);
 
   double time = 0;
 
