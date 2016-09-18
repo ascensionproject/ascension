@@ -174,3 +174,46 @@ Go read it now then come back here.
 
 #Useful Links
 - [LX Documentation](http://heronarts.com/lx/api/index.html?overview-summary.html)
+
+#Uploading to the Odroid
+
+1. Connect to the nextwork and SSH into the box:
+
+  ```
+  ssh root@192.168.1.109
+  ```
+  password: `odroid`
+
+2. Remount the filesystem as RW so we can make changes (persists until reboot):
+
+  ```
+  sudo remountrw
+  ```
+
+3. Make desired changes to `/ro`:
+
+  ```
+  cd /ro/home/
+  rm -rf ascension/
+  ```
+
+  (transfer ascension/ over sftp)
+  ```
+  ascension/compile.sh
+  ```
+
+4. Reboot
+
+  ```
+  reboot
+  ```
+
+#Booting the odroid in full rw mode (persistent change)
+
+1. Edit `/media/boot/boot.ini` to remove `aufs=tmpfs` from the end of `bootrootfs` on line 13
+2. Reboot
+
+#Reenabling read-only boot
+
+1. Edit `/media/boot/boot.ini` to add `aufs=tmpfs` to the end of `bootrootfs` on line 13
+2. Reboot
