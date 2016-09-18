@@ -38,7 +38,7 @@ class Engine {
 
   LXEffect[] effects(LX lx) {
     return new LXEffect[] {
-      // new CandyTextureEffect(lx),
+      new CandyTextureEffect(lx),
       // new NoiseEffect(lx),
     };
   }
