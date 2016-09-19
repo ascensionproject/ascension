@@ -33,6 +33,8 @@ class Engine {
       new PulsePattern(lx),
       new HeartShellTestPattern(lx),
       new ModelTestPattern(lx),
+      new AmirRegisterPlay2(lx),
+      new PulseAndHeartPattern2(lx),
     };
   }
 
