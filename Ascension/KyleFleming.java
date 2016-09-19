@@ -135,6 +135,10 @@ class NormalizedHeartShellTestPattern extends Pattern {
       if (led.isLeft) continue;
       setLEDColor(led, lx.hsb(globalFade.getValuef() + 180, 100, 80));
     }
+    for (LeafLED led : leaves.leds) {
+      if (led.isLeft) continue;
+      setLEDColor(led, lx.hsb(globalFade.getValuef() + 180, 100, 80));
+    }
 
     // Fade around base with saw wave
     for (HeartLED led : heart.leds) {
