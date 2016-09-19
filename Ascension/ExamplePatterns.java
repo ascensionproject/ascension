@@ -28,15 +28,17 @@ class SolidColorExamplePattern extends Pattern {
   **/
 
 class StaticPartsExamplePattern extends Pattern {
-
+  SinLFO brightness = new SinLFO(80, 100, 4000);
   StaticPartsExamplePattern(LX lx) {
+
     super(lx);
+    addModulator(brightness).start();
   }
 
   public void run(double deltaMs) {
-    
+    float br = brightness.getValuef();
     // make roots dark-green
-    int rootC = lx.hsb(144, 70, 30);
+    int rootC = lx.hsb(144, 70,br);
     for (RootLED led : roots.leds) {
       setLEDColor(led, rootC);
     }
@@ -47,12 +49,12 @@ class StaticPartsExamplePattern extends Pattern {
       // there are a little over 30 concentric "heart" shells on the heart
       int t = led.heartShell;
       
-      int heartC = lx.hsb(324, 90, 80-2*t); // red
+      int heartC = lx.hsb(324, 90, br-2*t); // red
       setLEDColor(led, heartC);
     }
 
     // make leaves lighter green
-    int leafC = lx.hsb(100, 100, 80);
+    int leafC = lx.hsb(100, 100, br);
     for (LeafLED led : leaves.leds) {
       setLEDColor(led, leafC);
     }
