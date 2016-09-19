@@ -68,7 +68,7 @@ class Engine {
     // });
 
     lx.setPatterns(patterns(lx));
-    lx.engine.getDefaultChannel().setFaderTransition(new AddTransition(lx));
+    lx.engine.getDefaultChannel().getRendererBlending().setTransition(new AddTransition(lx));
     for (LXEffect effect : effects(lx)) {
       lx.engine.addEffect(effect);
     }
