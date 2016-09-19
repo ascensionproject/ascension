@@ -218,7 +218,6 @@ class CandyTextureEffect extends Effect {
     if (broadOnOff.getValue() < 0) return;
 
     float intensity = min(2*(noise.getValuef() - 0.2f), 1) * min(broadOnOff.getValuef(), 1);
-    println("intensity: "+intensity);
     if (intensity <= 0) return;
 
     for (int i = 0; i < colors.length; i++) {
