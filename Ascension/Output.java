@@ -13,20 +13,16 @@ class PixelPusherOutput extends LXOutput {
   private final Model model;
 
   final DeviceRegistry ppRegistry;
-  final BasicObserver observer = new BasicObserver();
-
-  public boolean hasStrips = false;
 
   PixelPusherOutput(LX lx, DeviceRegistry ppRegistry) {
     super(lx);
     // enabled.setValue(false);
     model = (Model)lx.model;
     this.ppRegistry = ppRegistry;
-    ppRegistry.addObserver(observer);
+    ppRegistry.startPushing();
   }
 
   public void onSend(int[] colors) {
-    if (!hasStrips) return;
     for (LED led : model.leds) {
       if (led.ppStripIndex == -1) continue;
       if (led.ppGroup == -1) continue;
@@ -37,17 +33,6 @@ class PixelPusherOutput extends LXOutput {
 
       Strip strip = ppStrips.get(led.ppStripIndex - 1);
       strip.setPixel(colors[led.index], led.ppLedIndex);
-    }
-  }
-
-  class BasicObserver implements Observer {
-    public void update(Observable registry, Object updatedDevice) {
-      hasStrips = updatedDevice != null;
-      if (hasStrips) {
-        ppRegistry.startPushing();
-      } else {
-        ppRegistry.stopPushing();
-      }
     }
   }
 
