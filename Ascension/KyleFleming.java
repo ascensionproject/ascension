@@ -140,6 +140,11 @@ class NormalizedHeartShellTestPattern extends Pattern {
       setLEDColor(led, lx.hsb(globalFade.getValuef() + 180, 100, 80));
     }
 
+    for (LeafLED led : leaves.leds) {
+      if (led.isLeft) continue;
+      setLEDColor(led, lx.hsb(globalFade.getValuef() + 180, 100, 80));
+    }
+
     // Fade around base with saw wave
     for (HeartLED led : heart.leds) {
       colors[led.index] = lx.hsb(500*led.normalizedHeartShell + heartFade.getValuef(), 100, 80);
@@ -198,7 +203,6 @@ class NoiseEffect extends Effect {
     }
 
     setColors(0);
-    println(noise.getValuef());
   }
 
 }

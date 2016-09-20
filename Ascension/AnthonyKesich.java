@@ -225,17 +225,36 @@ class HeartShellTestPattern extends Pattern {
 class TrunkLengthRainbowPattern extends Pattern {
 
   SinLFO globalFade = new SinLFO(0, 360, 10000);
+  SawLFO heartFade = new SawLFO(360, 0, 2000);
 
   TrunkLengthRainbowPattern(LX lx) {
     super(lx);
     this.addModulator(globalFade).start();
+    this.addModulator(heartFade).start();
   }
 
   public void run(double deltaMs) {
     int c;
     // Fade around base with saw wave
     for (TrunkLED led : trunks.leds) {
-      c = lx.hsb(led.normalizedTrunkDistance * 360 + globalFade.getValuef(), 100, 80);
+      if (led.isLeft) {
+        c = lx.hsb(led.normalizedTrunkDistance * 360 + globalFade.getValuef(), 100, 80);
+      } else {
+        c = lx.hsb(led.normalizedTrunkDistance * 360 - globalFade.getValuef() + 180, 100, 80);
+      }
+      setLEDColor(led, c);
+    }
+    
+    for (HeartLED led : heart.leds) {
+      colors[led.index] = lx.hsb(500*led.normalizedHeartShell + heartFade.getValuef(), 100, 80);
+    }
+    
+    for (LeafLED led : leaves.leds) {
+      if (led.isLeft) {
+        c = lx.hsb(globalFade.getValuef(), 100, 80);
+      } else {
+        c = lx.hsb(-globalFade.getValuef() + 180, 100, 80);
+      }
       setLEDColor(led, c);
     }
   }

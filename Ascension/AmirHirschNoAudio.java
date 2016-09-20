@@ -167,7 +167,7 @@ class PulseAndHeartPattern2 extends Pattern {
       float param = 0;
       if (led instanceof TrunkLED) {
         TrunkLED trunkLed = (TrunkLED) led;
-        param = trunkLed.normalizedTrunkDistance * 2;
+        param = trunkLed.normalizedTrunkDistance * 6;
       } else if (led instanceof RootLED) {
         RootLED rootLed = (RootLED) led;
         param = rootLed.normalizedBasePath;
@@ -179,7 +179,7 @@ class PulseAndHeartPattern2 extends Pattern {
       c = lx.hsb(param*360, 100, 100);
 
       if (locOverride.getValuei() == -1) {
-        if (abs(param - location.getValuef()) % 1.0f < 0.02f) {
+        if (abs(param - location.getValuef()) % 1.0f < 0.1f) {
           setLEDColor(led, c);
         } else {
           setLEDColor(led, off);

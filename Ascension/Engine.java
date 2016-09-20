@@ -9,7 +9,7 @@ import heronarts.lx.model.*;
 import heronarts.lx.modulator.*;
 import heronarts.lx.pattern.*;
 import heronarts.lx.parameter.*;
-import heronarts.lx.transition.AddTransition;
+import heronarts.lx.transition.*;
 
 import processing.data.*;
 
@@ -20,20 +20,20 @@ class Engine {
   LXPattern[] patterns(LX lx) {
     return new LXPattern[] {
       new NormalizedHeartShellTestPattern(lx),
-      new NoisePattern(lx),
-      new NoiseFadePattern(lx),
-      new HeartRadiusTestPattern(lx),
-      new SolidColorExamplePattern(lx),
+      //new NoisePattern(lx),
+      //new NoiseFadePattern(lx),
+      //new HeartRadiusTestPattern(lx),
+      //new SolidColorExamplePattern(lx),
       new StaticPartsExamplePattern(lx),
-      new BasicAnimationPattern(lx),
-      new HeartPhiTestPattern(lx),
-      new TrunkPhiTestPattern(lx),
-      new PlantHeartWavePattern(lx),
+      //new BasicAnimationPattern(lx),
+      //new HeartPhiTestPattern(lx),
+      //new TrunkPhiTestPattern(lx),
+      //new PlantHeartWavePattern(lx),
       new TrunkLengthRainbowPattern(lx),
-      new PulsePattern(lx),
-      new HeartShellTestPattern(lx),
-      new ModelTestPattern(lx),
-      new AmirRegisterPlay2(lx),
+      //new PulsePattern(lx),
+      //new HeartShellTestPattern(lx),
+      //new ModelTestPattern(lx),
+      //new AmirRegisterPlay2(lx),
       new PulseAndHeartPattern2(lx),
     };
   }
@@ -66,6 +66,25 @@ class Engine {
     //     System.out.println(runtime);
     //   }
     // });
+    
+     // Switch patterns
+     lx.engine.addLoopTask(new LXLoopTask() {
+       double patternTime = 0;
+       char passNumber = 0;
+       long transitionPeriod = 10000;
+       public void loop(double deltaMs) {
+         patternTime += deltaMs;
+         if (patternTime > transitionPeriod) {
+           lx.engine.goNext();
+           patternTime = 0.0D;
+           if (passNumber < lx.engine.getPatterns().size()) {
+             passNumber++;
+           } else {
+             transitionPeriod = 300000; // 5 minutes
+           }
+         }
+       }
+     });
 
     lx.setPatterns(patterns(lx));
     lx.engine.getDefaultChannel().getRendererBlending().setTransition(new AddTransition(lx));
