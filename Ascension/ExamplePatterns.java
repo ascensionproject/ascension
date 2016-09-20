@@ -54,7 +54,7 @@ class StaticPartsExamplePattern extends Pattern {
     }
 
     // make leaves lighter green
-    int leafC = lx.hsb(100, 100, br);
+    int leafC = lx.hsb(100, 100, 100-(100-br)*2);
     for (LeafLED led : leaves.leds) {
       setLEDColor(led, leafC);
     }
